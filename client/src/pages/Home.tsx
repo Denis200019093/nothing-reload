@@ -2,7 +2,8 @@ import React, { FC, useState, MouseEvent, useEffect } from 'react'
 import { 
     Card, CardActions, CardContent,
     CardMedia, Button, Typography,
-    Avatar, Menu, MenuItem, Box
+    Avatar, Menu, MenuItem, Box,
+    TextField
 } from '@mui/material';
 import { styled, alpha } from '@mui/material/styles';
 
@@ -12,9 +13,10 @@ import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
-import { getPosts } from '../redux/actions/postActions'
+// import { getPosts } from '../redux/actions/postActions'
 import { useDispatch } from 'react-redux';
-import { useGetPostsQuery } from '../redux/posts/posts.api';
+import { useGetPostsQuery, useCreatePostMutation } from '../redux/actions/posts.api';
+import { IPost } from './../models/IPost';
 
 const CardActionsItem = styled(Box)(({ theme }) => ({
     display: 'flex', 
@@ -47,6 +49,10 @@ const Arrows = styled(Box)(({ theme }) => ({
 const Home: FC = () => {
 
     const { data, isLoading, error } = useGetPostsQuery(5)
+    const [ createPost, {} ] = useCreatePostMutation()
+
+    const [ title, setTitle ] = useState<string>('')
+    const [ description, setDescription ] = useState<string>('')
 
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
@@ -58,11 +64,35 @@ const Home: FC = () => {
     const handleClose = () => {
         setAnchorEl(null);
     };
-    console.log(data);
+    
+    const handleCreatePost = async () => {
+        await createPost({ title, description } as IPost)
+    }
     
 
     return (
         <Box sx={{ mt: 3 }}>
+            <Box>
+                <TextField
+                    name='title'
+                    variant='outlined'
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                />
+                <TextField
+                    name='description'
+                    variant='outlined'
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                />
+                <Button onClick={handleCreatePost}>Login</Button>
+            </Box>
+            <Box>
+                {data?.map(item => (
+                    <Typography>{item.title}</Typography>
+                ))}
+            </Box>
+
             <Card>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', p: 2, pb: 0 }}>
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>

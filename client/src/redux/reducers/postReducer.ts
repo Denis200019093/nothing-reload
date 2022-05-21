@@ -17,12 +17,12 @@ const todoSlice = createSlice({
         getPosts(state, action: PayloadAction<IPost[]>) {
             state.posts = action.payload
         },
-        createPost(state, action: PayloadAction<IPost>) {
-            state.posts.push(action.payload);
-        },
+        // createPost(state, action: PayloadAction<IPost>) {
+        //     state.posts.push(action.payload);
+        // },
     }
 });
 
-export const { getPosts, createPost } = todoSlice.actions;
+export const { getPosts } = todoSlice.actions;
 
 export default todoSlice.reducer;
