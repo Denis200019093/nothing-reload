@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.Set;
 
 @Service
@@ -24,9 +25,10 @@ public class UserService implements UserDetailsService {
     }
 
     public void saveUser(User user) {
-       // userRepo.findByUsername(user.getUsername()).orElseThrow(() -> new RuntimeException("User already exists!"));
+        userRepo.findByUsername(user.getUsername()).orElseThrow(() -> new RuntimeException("User already exists!"));
 
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        user.setRoles(Collections.singleton(Role.ADMIN));
 
         userRepo.save(user);
     }
