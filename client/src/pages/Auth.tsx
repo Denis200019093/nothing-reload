@@ -1,13 +1,13 @@
 import { Box, Button, TextField } from '@mui/material'
 import React, { FC, useState } from 'react'
-import { useActions } from '../hooks/useActions'
+// import { useActions } from '../hooks/useActions'
 
 const Auth: FC = () => {
 
     const [ username, setUsername ] = useState<string>('')
     const [ password, setPassword ] = useState<string>('')
 
-    const { login } = useActions()
+    // const { login } = useActions()
 
     return (
         <Box>
@@ -23,7 +23,7 @@ const Auth: FC = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
             />
-            <Button onClick={() => login({ username, password })}>Login</Button>
+            {/* <Button onClick={() => login({ username, password })}>Login</Button> */}
         </Box>
     )
 }
