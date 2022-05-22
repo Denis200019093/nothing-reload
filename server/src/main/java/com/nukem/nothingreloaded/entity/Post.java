@@ -19,6 +19,7 @@ public class Post {
 
     @NotBlank(message = "Please fill the title")
     private String title;
+    @Lob
     @NotBlank(message = "Please fill the message")
     private String content;
 
