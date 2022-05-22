@@ -13,12 +13,11 @@ import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
-// import { getPosts } from '../redux/actions/postActions'
 import { useDispatch } from 'react-redux';
-// import { useGetPostsQuery, useCreatePostMutation, useUpdatePostMutation,useLoginMutation } from '../redux/api/posts.api';
-import { useLoginMutation } from '../redux/api/posts.api';
 import { IPost } from './../models/IPost';
 import { IUser } from '../models/IUser';
+import { loginAsync } from '../redux/reducers/auth';
+import { useAppDispatch } from '../hooks/useTypedSelector';
 
 const CardActionsItem = styled(Box)(({ theme }) => ({
     display: 'flex', 
@@ -50,14 +49,10 @@ const Arrows = styled(Box)(({ theme }) => ({
 
 const Home: FC = () => {
 
-    // const { data, isLoading, error } = useGetPostsQuery(5)
-    // const [ createPost, {} ] = useCreatePostMutation()
-    // const [ updatePost, {} ] = useUpdatePostMutation()
-    const [ login, {} ] = useLoginMutation()
+    const dispatch = useAppDispatch()
 
     const [ username, setUsername ] = useState<string>('')
     const [ password, setPassword ] = useState<string>('')
-
 
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
@@ -69,10 +64,6 @@ const Home: FC = () => {
     const handleClose = () => {
         setAnchorEl(null);
     };
-    
-    const handleCreatePost = async () => {
-        await login({ username, password } as IUser)
-    }
     
     return (
         <Box sx={{ mt: 3 }}>
@@ -89,32 +80,8 @@ const Home: FC = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
             />
-                {/* <TextField
-                    name='title'
-                    variant='outlined'
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                />
-                <TextField
-                    name='description'
-                    variant='outlined'
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                /> */}
-                <Button onClick={handleCreatePost}>Login</Button>
+                <Button onClick={() => dispatch(loginAsync({ username, password }))}>Login</Button>
             </Box>
-            {/* <TextField
-                    name='newtitle'
-                    variant='outlined'
-                    value={newTitle}
-                    onChange={(e) => setNewTitle(e.target.value)}
-                />
-            <Box>
-                {data?.map(item => (
-                    <Typography onClick={() => handleUpdatePost(item)}>{item.title}</Typography>
-                ))}
-            </Box> */}
-
             <Card>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', p: 2, pb: 0 }}>
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
