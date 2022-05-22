@@ -14,4 +14,8 @@ public class CommentService {
     public void saveComment(Comment comment) {
         commentRepo.save(comment);
     }
+
+    public void deleteCommentById(Long id) {
+        if(commentRepo.existsById(id)) commentRepo.deleteById(id);
+    }
 }
