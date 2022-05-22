@@ -13,4 +13,8 @@ public class PostService {
     public void savePost(Post post) {
         postRepo.save(post);
     }
+
+    public Post findById(Long id) {
+        return postRepo.findById(id).orElseThrow(() -> new RuntimeException("Post with id " + id + " does not exist!"));
+    }
 }
