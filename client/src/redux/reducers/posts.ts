@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios'
+
 import { $api } from '../../http'
 import { IPost } from '../../models/IPost'
 
@@ -13,17 +13,20 @@ export const getPosts = createAsyncThunk(
 
 export const getPostDetails = createAsyncThunk(
     'posts/getPostDetails',
-    async (id: string, { rejectWithValue, dispatch }) => {
-        const { data } = await $api.get(`/posts/${id}`)
-        dispatch(setPostDetails(data))
+    async (id: any, { rejectWithValue, dispatch }) => {
+        const res = await $api.get(`/posts/${id}`)
+        console.log(res);
+        
+        // dispatch(setPostDetails(res))
     }
 )
 
 export const createPostAsync = createAsyncThunk(
     'posts/createPostAsync',
-    async (post: any, { rejectWithValue, dispatch }) => {
-        await $api.post('/posts', post)
-        dispatch(createPost(post))
+    async (post: IPost, { rejectWithValue, dispatch }) => {
+        const { data } = await $api.post('/posts', post)
+        
+        dispatch(createPost(data))
     }
 )
 
@@ -47,8 +50,8 @@ const postsSlice = createSlice({
         setPostDetails(state, action: PayloadAction<IPost>) {
             state.postDetails = action.payload
         },
-        createPost(state, action: PayloadAction<IPost[]>) {
-            state.posts = action.payload
+        createPost(state, action: PayloadAction<IPost>) {
+            state.posts.push(action.payload)
         },
     }
 });

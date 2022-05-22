@@ -5,7 +5,7 @@ interface IComment {
 }
 
 export interface IPost {
-    id: string;
+    id?: string;
     title: string;
     content: string;
 }
