@@ -12,6 +12,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping(("/posts"))
@@ -20,6 +21,17 @@ public class PostController {
 
     private final PostService postService;
     private final CommentService commentService;
+
+    @GetMapping
+    public ResponseEntity<List<Post>> getAllPosts(){
+        List<Post> postList = postService.findAll();
+        return new ResponseEntity<>(postList, HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Post> getPostById(@PathVariable Long id) {
+        return ResponseEntity.ok(postService.findById(id));
+    }
 
     @PostMapping
     public ResponseEntity<?> addPost(@AuthenticationPrincipal User user,
@@ -41,5 +53,11 @@ public class PostController {
         commentService.saveComment(comment);
 
         return new ResponseEntity<>(comment, HttpStatus.CREATED);
+    }
+
+    @DeleteMapping("/{id}/comment")
+    public ResponseEntity<HttpStatus> deleteComment(@PathVariable Long id){
+        commentService.deleteCommentById(id);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

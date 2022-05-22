@@ -5,6 +5,8 @@ import com.nukem.nothingreloaded.repository.PostRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class PostService {
@@ -12,6 +14,10 @@ public class PostService {
 
     public void savePost(Post post) {
         postRepo.save(post);
+    }
+
+    public List<Post> findAll() {
+        return postRepo.findAll();
     }
 
     public Post findById(Long id) {
