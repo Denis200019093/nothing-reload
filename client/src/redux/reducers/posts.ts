@@ -14,10 +14,9 @@ export const getPosts = createAsyncThunk(
 export const getPostDetails = createAsyncThunk(
     'posts/getPostDetails',
     async (id: any, { rejectWithValue, dispatch }) => {
-        const res = await $api.get(`/posts/${id}`)
-        console.log(res);
+        const { data } = await $api.get(`/posts/${id}`)
         
-        // dispatch(setPostDetails(res))
+        dispatch(setPostDetails(data))
     }
 )
 
