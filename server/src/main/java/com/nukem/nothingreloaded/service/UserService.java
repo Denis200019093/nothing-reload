@@ -25,12 +25,13 @@ public class UserService implements UserDetailsService {
     }
 
     public void saveUser(User user) {
-        userRepo.findByUsername(user.getUsername()).orElseThrow(() -> new RuntimeException("User already exists!"));
+        if(!userRepo.findByUsername(user.getUsername()).isPresent()) {
 
-        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-        user.setRoles(Collections.singleton(Role.ADMIN));
+            user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+            user.setRoles(Collections.singleton(Role.ADMIN));
 
-        userRepo.save(user);
+            userRepo.save(user);
+        } else throw new RuntimeException("User already exists");
     }
 
     public void setRoles(User user, Set<Role> roles) {
