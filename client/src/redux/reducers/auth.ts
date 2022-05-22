@@ -1,12 +1,11 @@
-import axios from 'axios'
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
-
+import { $api } from '../../http'
 import { IUser } from '../../models/IUser';
 
 export const loginAsync = createAsyncThunk(
     'posts/createPostAsync',
     async (user: IUser, { rejectWithValue, dispatch }) => {
-        await axios.post('https:/localhost:8080/login', user)
+        await $api.post('https:/localhost:8080/login', user)
         dispatch(login(user))
     }
 )
