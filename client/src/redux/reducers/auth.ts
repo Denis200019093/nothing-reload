@@ -5,7 +5,7 @@ import { IUser } from '../../models/IUser';
 export const loginAsync = createAsyncThunk(
     'posts/createPostAsync',
     async (user: IUser, { rejectWithValue, dispatch }) => {
-        await $api.post('https:/localhost:8080/login', user)
+        await $api.post('/login', user)
         dispatch(login(user))
     }
 )
