@@ -5,7 +5,7 @@ import { Box, AppBar, TextField, Button, InputBase, Avatar } from '@mui/material
 import AppleIcon from '@mui/icons-material/Apple';
 import DensityMediumIcon from '@mui/icons-material/DensityMedium';
 
-// import logo from '../assets/third.png'
+import logo from '../assets/third.png'
 
 const Search = styled('div')(({ theme }) => ({
     position: 'relative',
@@ -44,7 +44,7 @@ const HeaderBlock = styled(Box)(() => ({
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    minHeight: '50px',
+    minHeight: '60px',
     padding: '5px 15px',
 }));
 
@@ -73,7 +73,7 @@ const Header = () => {
         <AppBar sx={{ mb: 1 }} position="static">
             <HeaderBlock>
                 <HeaderSide>
-                    {/* <Logo src={logo} alt='logo'/> */}
+                    <Logo src={logo} alt='logo'/>
                 </HeaderSide>
                 <HeaderCenter>
                     <Search>
