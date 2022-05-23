@@ -38,7 +38,6 @@ public class PostController {
     @PostMapping
     public ResponseEntity<?> addPost(@AuthenticationPrincipal User user,
                                      @Valid @RequestBody Post post) {
-
         post.setAuthor(user);
         postService.savePost(post);
 
