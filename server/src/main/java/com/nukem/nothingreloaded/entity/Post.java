@@ -6,7 +6,10 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -33,7 +36,23 @@ public class Post {
             fetch = FetchType.LAZY,
             orphanRemoval = true
     )
-    private List<Comment> comments;
+    private List<Comment> comments = new ArrayList<>();
+
+    @ManyToMany
+    @JoinTable(
+            name = "post_likes",
+            joinColumns = { @JoinColumn(name = "post_id") },
+            inverseJoinColumns = { @JoinColumn(name = "user_id")}
+    )
+    private Set<User> likes = new HashSet<>();
+
+    @ManyToMany
+    @JoinTable(
+            name = "post_dislikes",
+            joinColumns = { @JoinColumn(name = "post_id") },
+            inverseJoinColumns = { @JoinColumn(name = "user_id")}
+    )
+    private Set<User> dislikes = new HashSet<>();
 
     public Post() {
     }
@@ -44,7 +63,25 @@ public class Post {
         this.author = author;
     }
 
-    public void addComment(Comment comment){
+    public void addComment(Comment comment) {
         comments.add(comment);
+    }
+
+    public void addLike(User user){
+        if(!likes.contains(user)) likes.add(user);
+        else likes.remove(user);
+    }
+
+    public void addDislike(User user){
+        if(!dislikes.contains(user)) likes.add(user);
+        else dislikes.remove(user);
+    }
+
+    public long getDislikesCount() {
+        return dislikes.size();
+    }
+
+    public long getLikesCount() {
+        return likes.size();
     }
 }
