@@ -19,6 +19,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PostController {
 
+
     private final PostService postService;
     private final CommentService commentService;
 
@@ -35,7 +36,7 @@ public class PostController {
 
     @PostMapping
     public ResponseEntity<?> addPost(@AuthenticationPrincipal User user,
-                                              @Valid @RequestBody Post post) {
+                                     @Valid @RequestBody Post post) {
 
         post.setAuthor(user);
         postService.savePost(post);
@@ -43,11 +44,10 @@ public class PostController {
         return new ResponseEntity<>(post, HttpStatus.CREATED);
     }
 
-    @PostMapping("/{id}/comment")
-    public ResponseEntity<Comment> addComment(@AuthenticationPrincipal User user, @Valid @RequestBody Comment comment,
-                                                 @PathVariable Long id){
-
-        Post post = postService.findById(id);
+    @PostMapping("/{post}/comment")
+    public ResponseEntity<Comment> addComment(@AuthenticationPrincipal User user,
+                                              @Valid @RequestBody Comment comment,
+                                              @PathVariable Post post) {
         comment.setPost(post);
         comment.setAuthor(user);
         commentService.saveComment(comment);

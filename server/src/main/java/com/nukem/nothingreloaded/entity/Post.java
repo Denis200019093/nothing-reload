@@ -1,7 +1,6 @@
 package com.nukem.nothingreloaded.entity;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -23,7 +22,7 @@ public class Post {
     @NotBlank(message = "Please fill the message")
     private String content;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name = "author_id")
     private User author;
 
@@ -35,6 +34,15 @@ public class Post {
             orphanRemoval = true
     )
     private List<Comment> comments;
+
+    public Post() {
+    }
+
+    public Post(String title, String content, User author) {
+        this.title = title;
+        this.content = content;
+        this.author = author;
+    }
 
     public void addComment(Comment comment){
         comments.add(comment);

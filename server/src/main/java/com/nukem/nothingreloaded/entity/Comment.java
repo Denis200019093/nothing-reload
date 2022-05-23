@@ -18,7 +18,7 @@ public class Comment {
     private String text;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "author_id", nullable = false, updatable = false)
+    @JoinColumn(name = "author_id", nullable = true, updatable = false)
     private User author;
     @JsonBackReference
     @ManyToOne
