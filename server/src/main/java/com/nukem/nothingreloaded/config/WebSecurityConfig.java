@@ -40,13 +40,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                     .csrf().disable()
                     .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                    .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
-                    .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint)
                  .and()
                      .authorizeRequests()
                      .antMatchers("/login", "/registration").permitAll()
-                     .anyRequest().authenticated();
+                     .anyRequest().authenticated()
+                .and()
+                    .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
+                    .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint);
     }
 
     @Autowired
