@@ -9,7 +9,7 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { useParams } from 'react-router-dom';
 
 import { useAppDispatch, useTypedSelector } from '../hooks/useTypedSelector';
-import { getPostDetails } from '../redux/reducers/posts';
+import { getPostDetails, createCommentAsync } from '../redux/reducers/posts';
 
 import { CardActionsItem, Arrows } from '../components/PostItem'
 
@@ -67,6 +67,7 @@ const PostDetails = () => {
     const { id } = useParams()
 
     const [ active, setActive ] = useState<boolean>(false)
+    const [ content, setContent ] = useState<string>('')
 
     useEffect(() => {
         dispatch(getPostDetails(id))
@@ -114,8 +115,17 @@ const PostDetails = () => {
                 <Box>
                     {active ? 
                         <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-                            <TextArea/> 
-                            <Button sx={{ mt: 1, color: '#fff' }} variant='contained'>Create</Button>
+                            <TextArea
+                                placeholder='Text...'
+                                value={content}
+                                onChange={e => setContent(e.target.value)}
+                            /> 
+                            <Button 
+                                onClick={() => dispatch(createCommentAsync({content, id}))} 
+                                sx={{ mt: 1, color: '#fff' }} 
+                                variant='contained'>
+                                Create
+                            </Button>
                         </Box>
                         :
                         <ActiveBlock onClick={() => setActive(true)}>Comment text...</ActiveBlock>

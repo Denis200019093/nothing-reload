@@ -1,7 +1,6 @@
-interface IComment {
-    id: string;
-    value: string;
-    username: string
+export interface IComment {
+    id?: string;
+    content: string;
 }
 
 export interface IPost {

@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 
 import { $api } from '../../http'
-import { IPost } from '../../models/IPost'
+import { IPost, IComment } from '../../models/IPost'
 
 export const getPosts = createAsyncThunk(
     'posts/getPosts',
@@ -26,6 +26,17 @@ export const createPostAsync = createAsyncThunk(
         const { data } = await $api.post('/posts', post)
         
         dispatch(createPost(data))
+    }
+)
+export const createCommentAsync = createAsyncThunk(
+    'posts/createCommentAsync',
+    async (commentData: IComment, { rejectWithValue, dispatch }) => {
+        console.log(commentData);
+        
+        const { data } = await $api.post(`/posts/${commentData.id}/comment`, commentData.content)
+        console.log(data);
+        
+        // dispatch(createPost(data))
     }
 )
 
