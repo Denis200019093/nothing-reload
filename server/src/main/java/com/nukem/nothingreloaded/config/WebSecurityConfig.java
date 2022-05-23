@@ -42,11 +42,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                     .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
-                    .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint);
-                // .and()
-                //     .authorizeRequests()
-                //     .antMatchers("/login", "/registration").permitAll()
-                //     .anyRequest().authenticated();
+                    .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                 .and()
+                     .authorizeRequests()
+                     .antMatchers("/login", "/registration").permitAll()
+                     .anyRequest().authenticated();
     }
 
     @Autowired
