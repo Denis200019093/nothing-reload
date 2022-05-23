@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -25,14 +26,16 @@ public class PostController {
     private final CommentService commentService;
 
     @GetMapping
-    public ResponseEntity<List<PostDto>> getAllPosts(){
-        List<PostDto> postList = postService.findAll().stream().map(PostDto::new).collect(Collectors.toList());
+    public ResponseEntity<List<PostDto>> getAllPosts(@AuthenticationPrincipal User user) {
+        List<PostDto> postList = postService.findAll().stream().map((post) -> PostDto.convertPostToDto(post, user)).collect(Collectors.toList());
         return new ResponseEntity<>(postList, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<PostDto> getPostById(@PathVariable Long id) {
-        return ResponseEntity.ok(new PostDto(postService.findById(id)));
+    public ResponseEntity<PostDto> getPostById(@AuthenticationPrincipal User user,
+                                               @PathVariable Long id) {
+        PostDto postDto = PostDto.convertPostToDto(postService.findById(id), user);
+        return ResponseEntity.ok(postDto);
     }
 
     @PostMapping
@@ -46,9 +49,9 @@ public class PostController {
 
     @PostMapping("/{post}/like")
     public ResponseEntity<?> likePost(@AuthenticationPrincipal User user,
-                                      @PathVariable(required = false) Post post){
-        if(user == null) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        if(post == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+                                      @PathVariable(required = false) Post post) {
+        if (user == null) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        if (post == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         post.addLike(user);
         postService.savePost(post);
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
@@ -56,9 +59,9 @@ public class PostController {
 
     @PostMapping("/{post}/dislike")
     public ResponseEntity<?> dislikePost(@AuthenticationPrincipal User user,
-                                      @PathVariable(required = false) Post post){
-        if(user == null) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        if(post == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+                                         @PathVariable(required = false) Post post) {
+        if (user == null) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        if (post == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         post.addDislike(user);
         postService.savePost(post);
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
@@ -68,8 +71,8 @@ public class PostController {
     public ResponseEntity<Comment> addComment(@AuthenticationPrincipal User user,
                                               @Valid @RequestBody Comment comment,
                                               @PathVariable(required = false) Post post) {
-        if(user == null) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        if(post == null) return new ResponseEntity<>(comment, HttpStatus.BAD_REQUEST);
+        if (user == null) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        if (post == null) return new ResponseEntity<>(comment, HttpStatus.BAD_REQUEST);
         comment.setPost(post);
         comment.setAuthor(user);
         commentService.saveComment(comment);
@@ -78,7 +81,7 @@ public class PostController {
     }
 
     @DeleteMapping("/{id}/comment")
-    public ResponseEntity<HttpStatus> deleteComment(@PathVariable Long id){
+    public ResponseEntity<HttpStatus> deleteComment(@PathVariable Long id) {
         commentService.deleteCommentById(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }

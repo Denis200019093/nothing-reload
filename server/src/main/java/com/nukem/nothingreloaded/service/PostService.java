@@ -1,6 +1,7 @@
 package com.nukem.nothingreloaded.service;
 
 import com.nukem.nothingreloaded.entity.Post;
+import com.nukem.nothingreloaded.entity.User;
 import com.nukem.nothingreloaded.repository.PostRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

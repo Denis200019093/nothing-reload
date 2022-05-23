@@ -17,6 +17,9 @@ public class PostDto {
     private List<Comment> comments;
     private Long likes;
     private Long dislikes;
+    private boolean isUserLiked;
+    private boolean isUserDisliked;
+
 
     public PostDto(Post post) {
         id = post.getId();
@@ -26,5 +29,19 @@ public class PostDto {
         comments = post.getComments();
         likes = post.getLikesCount();
         dislikes = post.getDislikesCount();
+    }
+
+    public static PostDto convertPostToDto(Post post, User user) {
+        PostDto postDto = new PostDto(post);
+//        setId(post.getId());
+//        setTitle(post.getTitle());
+//        setContent(post.getContent());
+//        setAuthor(new UserDto(post.getAuthor()));
+//        setComments(post.getComments());
+//        setLikes(post.getLikesCount());
+//        setDislikes(post.getDislikesCount());
+        postDto.setUserLiked(post.getLikes().contains(user));
+        postDto.setUserDisliked(post.getDislikes().contains(user));
+        return postDto;
     }
 }
