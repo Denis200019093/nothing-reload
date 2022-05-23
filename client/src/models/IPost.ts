@@ -1,6 +1,6 @@
 export interface IComment {
     id?: string;
-    content: string;
+    text: string;
 }
 
 export interface IPost {

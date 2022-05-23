@@ -30,11 +30,10 @@ export const createPostAsync = createAsyncThunk(
 )
 export const createCommentAsync = createAsyncThunk(
     'posts/createCommentAsync',
-    async (commentData: IComment, { rejectWithValue, dispatch }) => {
-        console.log(commentData);
+    async ({ text, id }: IComment, { rejectWithValue, dispatch }) => {
+        console.log(text);
         
-        const { data } = await $api.post(`/posts/${commentData.id}/comment`, commentData.content)
-        console.log(data);
+        const { data } = await $api.post(`/posts/${id}/comment`, {text})
         
         // dispatch(createPost(data))
     }

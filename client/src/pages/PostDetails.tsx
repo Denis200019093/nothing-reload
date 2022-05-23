@@ -67,7 +67,7 @@ const PostDetails = () => {
     const { id } = useParams()
 
     const [ active, setActive ] = useState<boolean>(false)
-    const [ content, setContent ] = useState<string>('')
+    const [ text, setText ] = useState<string>('')
 
     useEffect(() => {
         dispatch(getPostDetails(id))
@@ -117,11 +117,11 @@ const PostDetails = () => {
                         <Box sx={{ display: 'flex', flexDirection: 'column' }}>
                             <TextArea
                                 placeholder='Text...'
-                                value={content}
-                                onChange={e => setContent(e.target.value)}
+                                value={text}
+                                onChange={e => setText(e.target.value)}
                             /> 
                             <Button 
-                                onClick={() => dispatch(createCommentAsync({content, id}))} 
+                                onClick={() => dispatch(createCommentAsync({text, id}))} 
                                 sx={{ mt: 1, color: '#fff' }} 
                                 variant='contained'>
                                 Create
