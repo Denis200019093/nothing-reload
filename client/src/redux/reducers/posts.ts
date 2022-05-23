@@ -1,11 +1,16 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
+import Cookies from 'js-cookie'
 
 import { $api } from '../../http'
 import { IPost, IComment } from '../../models/IPost'
 
+const token = Cookies.get('user')
+
 export const getPosts = createAsyncThunk(
     'posts/getPosts',
     async (_, { rejectWithValue, dispatch }) => {
+        console.log(token);
+        
         const { data } = await $api.get('/posts')
         dispatch(setPosts(data))
     }

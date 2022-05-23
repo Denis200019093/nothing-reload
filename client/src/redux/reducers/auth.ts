@@ -1,15 +1,23 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
+import { AxiosResponse } from 'axios';
 import Cookies from 'js-cookie'
 import { $api } from '../../http'
 import { IUser } from '../../models/IUser';
 
+export interface AuthResponse {
+    token: string;
+    user: IUser
+}
 export const loginAsync = createAsyncThunk(
     'auth/loginAsync',
     async (user: IUser, { rejectWithValue, dispatch }) => {
-        const { data } = await $api.post('/login', user)
+        const { data } = await $api.post<AuthResponse>('/login', user)
         dispatch(login(user))
-
+        console.log(data.token);
+        
         Cookies.set('user', data.token, { expires: 7 })
+        localStorage.setItem('token', data.token)
+
     }
 )
 

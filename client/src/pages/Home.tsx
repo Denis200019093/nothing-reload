@@ -39,38 +39,24 @@ const Home: FC = () => {
                 onChange={(e) => setContent(e.target.value)}
             />
             <Button onClick={() => dispatch(createPostAsync({ title, content }))}>Create post</Button>
+            <Box>
+                <TextField
+                    name='username'
+                    placeholder='username'
+                    variant='outlined'
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                />
+                <TextField
+                    name='password'
+                    placeholder='password'
+                    variant='outlined'
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                />
 
-            {/* <TextField
-                name='username'
-                placeholder='username'
-                variant='outlined'
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-            />
-            <TextField
-                name='email'
-                placeholder='email'
-                variant='outlined'
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-            />
-            <TextField
-                name='password'
-                placeholder='password'
-                variant='outlined'
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-            />
-            <TextField
-                name='password'
-                placeholder='password'
-                variant='outlined'
-                value={passwordConfirm}
-                onChange={(e) => setConfirm(e.target.value)}
-            />
                 <Button onClick={() => dispatch(loginAsync({ username, password }))}>Login</Button>
-                <Button onClick={() => dispatch(registrationAsync({ username, email, password, passwordConfirm }))}>Register</Button>
-            </Box> */}
+            </Box>
             <Posts/>
         </Box>
         

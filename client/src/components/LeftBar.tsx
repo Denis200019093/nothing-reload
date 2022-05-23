@@ -16,7 +16,7 @@ const LeftBarItem = styled(Box)(({ theme }) => ({
     color: 'rgba(0,0,0, 0.7)',
     margin: '0 0 10px 0',
     padding: '10px',
-    width: '75%',
+    flexBasis: '75%',
     transition: '0.2s',
     borderRadius: '7.5px',
     fontWeight: 500,
@@ -37,9 +37,8 @@ const LeftBar = () => {
     return (
         <LeftBarBlock>
             {['Recent', 'Bookmarks', 'Subscribes'].map(item => (
-                <LinkPage to={`/${item.toLowerCase()}`}>
+                <LinkPage key={item} to={`/${item.toLowerCase()}`}>
                     <LeftBarItem 
-                    key={item}
                     sx={{ 
                         background: item.toLowerCase() === 
                         pathname.slice(1) ? '#00C9A7' : '' ,
