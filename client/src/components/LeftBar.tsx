@@ -1,9 +1,9 @@
-import React from 'react'
-import { Box } from '@mui/material'
+import React, { } from 'react'
+import { Link } from 'react-router-dom'
+import { Box, Typography } from '@mui/material'
 import AccessTimeFilledIcon from '@mui/icons-material/AccessTimeFilled';
-import BookmarksIcon from '@mui/icons-material/Bookmarks';
-import SubscriptionsIcon from '@mui/icons-material/Subscriptions';
 import { styled } from '@mui/material/styles';
+import { useLocation } from "react-router-dom"
 
 const LeftBarBlock = styled(Box)(({ theme }) => ({
     display: 'flex',
@@ -22,25 +22,37 @@ const LeftBarItem = styled(Box)(({ theme }) => ({
     fontWeight: 500,
     cursor: 'pointer',
     '&:hover': {
-        backgroundColor: '#F1F1F1'
+        
     }
 }));
 
+const LinkPage = styled(Link)(({ theme }) => ({
+    textDecoration: 'none'
+}));
+
 const LeftBar = () => {
+
+    const { pathname } = useLocation()
+    
     return (
         <LeftBarBlock>
-            <LeftBarItem> 
-                <AccessTimeFilledIcon/> 
-                Recent
-            </LeftBarItem>
-            <LeftBarItem>
-                <BookmarksIcon/>
-                Bookmarks
-            </LeftBarItem>
-            <LeftBarItem>
-                <SubscriptionsIcon/>
-                Subscribes
-            </LeftBarItem>
+            {['Recent', 'Bookmarks', 'Subscribes'].map(item => (
+                <LinkPage to={`/${item.toLowerCase()}`}>
+                    <LeftBarItem 
+                    key={item}
+                    sx={{ 
+                        background: item.toLowerCase() === 
+                        pathname.slice(1) ? '#00C9A7' : '' ,
+                        "&:hover": {
+                            backgroundColor: item.toLowerCase() === 
+                            pathname.slice(1) ? '' : '#F1F1F1'
+                        }
+                    }}> 
+                        <AccessTimeFilledIcon/> 
+                        <Typography sx={{ ml: 1 }}>{item}</Typography>
+                    </LeftBarItem>
+                </LinkPage>
+            ))}
         </LeftBarBlock>
     )
 }

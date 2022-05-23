@@ -31,11 +31,10 @@ export const createPostAsync = createAsyncThunk(
 export const createCommentAsync = createAsyncThunk(
     'posts/createCommentAsync',
     async ({ text, id }: IComment, { rejectWithValue, dispatch }) => {
-        console.log(text);
         
         const { data } = await $api.post(`/posts/${id}/comment`, {text})
         
-        // dispatch(createPost(data))
+        dispatch(createComment(data))
     }
 )
 
@@ -62,8 +61,11 @@ const postsSlice = createSlice({
         createPost(state, action: PayloadAction<IPost>) {
             state.posts.push(action.payload)
         },
+        createComment(state, action: PayloadAction<IComment>) {
+            state.postDetails.comments?.push(action.payload)
+        },
     }
 });
 
-export const { setPosts, setPostDetails, createPost } = postsSlice.actions;
+export const { setPosts, setPostDetails, createPost, createComment } = postsSlice.actions;
 export default postsSlice.reducer

@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react'
+import { useParams } from 'react-router-dom';
+
 import { Box, Typography, Avatar, TextareaAutosize, Button } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import SortIcon from '@mui/icons-material/Sort';
@@ -6,12 +8,13 @@ import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import { useParams } from 'react-router-dom';
 
 import { useAppDispatch, useTypedSelector } from '../hooks/useTypedSelector';
 import { getPostDetails, createCommentAsync } from '../redux/reducers/posts';
 
 import { CardActionsItem, Arrows } from '../components/PostItem'
+import CommentItem from '../components/CommentItem';
+import { IComment } from '../models/IPost';
 
 const CommentsBlock = styled(Box)(({ theme }) => ({
 	display: 'flex',
@@ -72,7 +75,6 @@ const PostDetails = () => {
     useEffect(() => {
         dispatch(getPostDetails(id))
     }, [dispatch, id])
-    console.log(postDetails);
     
     return (
         <Box sx={{ pl: 3, pr: 3 }}>
@@ -131,42 +133,14 @@ const PostDetails = () => {
                         <ActiveBlock onClick={() => setActive(true)}>Comment text...</ActiveBlock>
                     }
                 </Box>
-                
-                <Box sx={{ backgroundColor: '#F1F1F1', p: 1, borderRadius: '7.5px', mb: 2, mt: 3 }}>
-                    <FlexBlocks sx={{ mb: 2 }}>
-                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                            <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
-                            <Typography sx={{ ml: 1 }}>Nothing</Typography>
-                        </Box>
-                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                            <Arrows>
-                                <KeyboardArrowUpIcon/>
-                            </Arrows>
-                            <Typography sx={{ pl: 1, pr: 1 }}>0</Typography>
-                            <Arrows>
-                                <KeyboardArrowDownIcon/>
-                            </Arrows>
-                        </Box>
-                    </FlexBlocks>
-                    <Typography>До появления Человека-паука в 1960-х подростки в комиксах о супергероях обычно были всего лишь их помощниками. </Typography>
-                </Box>
-                <Box sx={{ backgroundColor: '#F1F1F1', p: 1, borderRadius: '7.5px' }}>
-                    <FlexBlocks sx={{ mb: 2 }}>
-                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                            <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
-                            <Typography sx={{ ml: 1 }}>Chill Pavuk</Typography>
-                        </Box>
-                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                            <Arrows>
-                                <KeyboardArrowUpIcon/>
-                            </Arrows>
-                            <Typography sx={{ pl: 1, pr: 1 }}>0</Typography>
-                            <Arrows>
-                                <KeyboardArrowDownIcon/>
-                            </Arrows>
-                        </Box>
-                    </FlexBlocks>
-                    <Typography>Marvel выпустила множество серий комиксов о Человеке-пауке. Самая первая из них — The Amazing Spider-Man (рус. Удивительный Человек-паук), </Typography>
+                <Box>
+                    {postDetails.comments && 
+                     postDetails.comments.map((comm: IComment, index: number) => (
+                        <CommentItem
+                            key={index}
+                            comment={comm}
+                        />
+                    ))}
                 </Box>
             </CommentsBlock>
         </Box>

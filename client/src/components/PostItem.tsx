@@ -64,7 +64,7 @@ const PostItem: FC<IProps> = ({ item }) => {
     };
     
     return (
-        <Card>
+        <Card sx={{ mb: 4, mt: 2 }}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', p: 2, pb: 0 }}>
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
                     <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
@@ -94,12 +94,12 @@ const PostItem: FC<IProps> = ({ item }) => {
             <CardContent sx={{ p: 2 }}>
                 <Link to={`/posts/${item.id}`}>
                     <Typography sx={{ fontWeight: 700, mb: 0.5 }} gutterBottom variant="h4" component="div">
-                        {item.title || 'Lizard'}
+                        {item.title}
                     </Typography>
                 </Link>
                 
                 <Typography sx={{ fontWeight: 500, fontSize: '17px' }} variant="body2">
-                    {item.content || 'Content'}
+                    {item.content}
                 </Typography>
             </CardContent>
             <CardMedia
@@ -112,7 +112,7 @@ const PostItem: FC<IProps> = ({ item }) => {
                     <Box sx={{ display: 'flex' }}>
                         <CardActionsItem>
                             <ChatBubbleOutlineIcon/>
-                            <Typography variant="body2">244</Typography>
+                            <Typography variant="body2">{item.comments?.length}</Typography>
                         </CardActionsItem>
                         <CardActionsItem>
                             <BookmarkBorderIcon/>

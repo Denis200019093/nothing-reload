@@ -13,21 +13,16 @@ const Posts = () => {
 
     useEffect(() => {
         dispatch(getPosts())
-    }, [dispatch])
-
-    console.log(posts);
-    
+    }, [dispatch])    
 
     return (
-        <Box>
-            <>
+        <Box>            
             {posts && posts.map((item: IPost, index: number) => (
                 <PostItem
                     key={index}
                     item={item}
                 />
             ))}
-            </>
         </Box>
     )
 }

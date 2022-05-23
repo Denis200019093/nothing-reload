@@ -1,11 +1,12 @@
 import React, { useState } from 'react'
 import { styled, alpha } from '@mui/material/styles';
-import { Box, AppBar, TextField, Button, InputBase, Avatar } from '@mui/material';
+import { Box, AppBar, TextField, Button, InputBase, Avatar, Grid } from '@mui/material';
 
 import AppleIcon from '@mui/icons-material/Apple';
 import DensityMediumIcon from '@mui/icons-material/DensityMedium';
 
 import logo from '../assets/third.png'
+import { Link } from 'react-router-dom';
 
 const Search = styled('div')(({ theme }) => ({
     position: 'relative',
@@ -40,24 +41,23 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 	},
 }));
 
-const HeaderBlock = styled(Box)(() => ({
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+const HeaderBlock = styled(Grid)(() => ({
+    
     minHeight: '60px',
     padding: '5px 15px',
 }));
 
-const HeaderSide = styled(Box)(() => ({
+const HeaderSide = styled(Grid)(() => ({
     flexBasis: '25%',
     display: 'flex',
     alignItems: 'center'
 }));
 
-const HeaderCenter = styled(Box)(() => ({
-    flexBasis: '50%',
+const HeaderCenter = styled(Grid)(() => ({
     display: 'flex',
-    justifyContent: 'space-around'
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    // flexBasis: '50%',
 }));
 
 const Logo = styled('img')(() => ({
@@ -67,15 +67,17 @@ const Logo = styled('img')(() => ({
 
 const Header = () => {
 
-    const [  activeInput, setActive ] = useState<boolean>(false)
+    const [ activeInput, setActive ] = useState<boolean>(false)
 
     return (
         <AppBar sx={{ mb: 1 }} position="static">
-            <HeaderBlock>
-                <HeaderSide>
-                    <Logo src={logo} alt='logo'/>
+            <HeaderBlock container>
+                <HeaderSide item md={2.5}>
+                    <Link to='/'>
+                        <Logo src={logo} alt='logo'/>
+                    </Link>
                 </HeaderSide>
-                <HeaderCenter>
+                <HeaderCenter item md={6.5}>
                     <Search>
 						<StyledInputBase
 							sx={{ width: '325px' }}
@@ -95,7 +97,7 @@ const Header = () => {
                         }}
                     >Create</Button>
                 </HeaderCenter>
-                <HeaderSide sx={{ justifyContent: 'end' }}>
+                <HeaderSide sx={{ justifyContent: 'end' }} item md={3}>
                     <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
                 </HeaderSide>
             </HeaderBlock>

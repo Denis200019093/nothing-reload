@@ -1,6 +1,6 @@
-import React, { FC } from 'react'
+import React from 'react'
 
-const Comments: FC = () => {
+const Comments = () => {
     return (
         <div>Comments</div>
     )

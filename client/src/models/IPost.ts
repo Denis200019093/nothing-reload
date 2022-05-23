@@ -7,6 +7,7 @@ export interface IPost {
     id?: string;
     title: string;
     content: string;
+    comments?: IComment[];
 }
 // interface IComment {
 //     id: string;
