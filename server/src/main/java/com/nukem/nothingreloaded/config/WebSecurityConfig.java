@@ -42,7 +42,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                  .and()
                      .authorizeRequests()
-                     .antMatchers("/posts", "/login", "/registration").permitAll()
+                     .antMatchers("/posts/**", "/login", "/registration").permitAll()
                      .anyRequest().authenticated()
                 .and()
                     .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
