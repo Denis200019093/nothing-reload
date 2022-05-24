@@ -1,12 +1,14 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { styled, alpha } from '@mui/material/styles';
-import { Box, AppBar, TextField, Button, InputBase, Avatar, Grid } from '@mui/material';
+import { Box, AppBar, TextField, Button, InputBase, Avatar, Grid, Typography } from '@mui/material';
 
+import { useAppDispatch, useTypedSelector } from '../hooks/useTypedSelector';
 import AppleIcon from '@mui/icons-material/Apple';
 import DensityMediumIcon from '@mui/icons-material/DensityMedium';
 
 import logo from '../assets/third.png'
 import { Link } from 'react-router-dom';
+import { getUserInfoAsync } from '../redux/reducers/auth';
 
 const Search = styled('div')(({ theme }) => ({
     position: 'relative',
@@ -67,8 +69,16 @@ const Logo = styled('img')(() => ({
 
 const Header = () => {
 
+    const dispatch = useAppDispatch()
+    const { authUser } = useTypedSelector(state => state.auth)
     const [ activeInput, setActive ] = useState<boolean>(false)
 
+    useEffect(() => {
+        dispatch(getUserInfoAsync())
+    }, [dispatch])
+
+    console.log(authUser);
+    
     return (
         <AppBar sx={{ mb: 1 }} position="static">
             <HeaderBlock container>
@@ -98,7 +108,16 @@ const Header = () => {
                     >Create</Button>
                 </HeaderCenter>
                 <HeaderSide sx={{ justifyContent: 'end' }} item md={3}>
-                    <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
+                    <Typography 
+                        variant='h4' 
+                        sx={{ 
+                            border: '2px solid #000', 
+                            p: '0 10px', 
+                            borderRadius: '50%' 
+                        }}>
+                            {authUser.username?.slice(0,1).toUpperCase() || 
+                            <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
+                        }</Typography>
                 </HeaderSide>
             </HeaderBlock>
         </AppBar>

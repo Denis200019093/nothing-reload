@@ -43,6 +43,26 @@ export const createCommentAsync = createAsyncThunk(
     }
 )
 
+export const likeAsync = createAsyncThunk(
+    'posts/likeAsync',
+    async (id: any, { rejectWithValue, dispatch }) => { 
+        const res = await $api.post(`/posts/${id}/like`, id)
+        console.log(res);
+        
+        dispatch(likePost(id))
+    }
+)
+
+export const dislikeAsync = createAsyncThunk(
+    'posts/dislikeAsync',
+    async (id: string, { rejectWithValue, dispatch }) => {
+        
+        await $api.post(`/posts/${id}/dislike`, id)
+        
+        dispatch(dislikePost(id))
+    }
+)
+
 interface PostsState {
     posts: IPost[];
     postDetails: IPost;
@@ -69,8 +89,64 @@ const postsSlice = createSlice({
         createComment(state, action: PayloadAction<IComment>) {
             state.postDetails.comments?.push(action.payload)
         },
+        likePost(state, action: PayloadAction<string>) { 
+            state.posts = state.posts.map((item) => {
+                if ( item.id === action.payload ) {
+                    
+                    if ( item.userDisliked ) { 
+                        return {
+                            ...item, 
+                            dislikes: item.dislikes - 1, 
+                            likes: item.likes + 1, 
+                            userDisliked: false,
+                            userLiked: true 
+                        }
+                    }
+
+                    if ( item.userLiked ) { 
+                        return {
+                            ...item, 
+                            likes: item.likes - 1, 
+                            userLiked: false 
+                        }
+                    }
+
+                    return { ...item, likes: item.likes + 1, userLiked: true, userDisliked: false }
+                }
+
+                return item
+            })
+        },
+        dislikePost(state, action: PayloadAction<string>) { 
+            state.posts = state.posts.map((item) => {
+                if ( item.id === action.payload ) {
+
+                    if ( item.userLiked ) { 
+                        return {
+                            ...item, 
+                            dislikes: item.dislikes + 1, 
+                            likes: item.likes - 1, 
+                            userDisliked: true,
+                            userLiked: false 
+                        }
+                    }
+
+                    if ( item.userDisliked ) { 
+                        return {
+                            ...item, 
+                            dislikes: item.dislikes - 1, 
+                            userDisliked: false 
+                        }
+                    }
+
+                    return {...item, dislikes: item.dislikes + 1, userLiked: false, userDisliked: true }
+                }
+
+                return item
+            })
+        },
     }
 });
 
-export const { setPosts, setPostDetails, createPost, createComment } = postsSlice.actions;
+export const { setPosts, setPostDetails, createPost, createComment, likePost, dislikePost } = postsSlice.actions;
 export default postsSlice.reducer

@@ -16,6 +16,8 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { IPost } from './../models/IPost';
 import { IUser } from '../models/IUser';
 import { styled, alpha } from '@mui/material/styles';
+import { likeAsync, dislikeAsync } from '../redux/reducers/posts';
+import { useAppDispatch } from '../hooks/useTypedSelector';
 
 
 export const CardActionsItem = styled(Box)(({ theme }) => ({
@@ -52,7 +54,13 @@ interface IProps {
 
 const PostItem: FC<IProps> = ({ item }) => {
 
+    const dispatch = useAppDispatch()
+
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+
+    const [ like, setLike ] = useState<boolean>(false);
+    const [ dislike, setDislike ] = useState<boolean>(false);
+
     const open = Boolean(anchorEl);
 
     const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
@@ -62,6 +70,7 @@ const PostItem: FC<IProps> = ({ item }) => {
     const handleClose = () => {
         setAnchorEl(null);
     };
+    console.log(item);
     
     return (
         <Card sx={{ mb: 4, mt: 2 }}>
@@ -119,11 +128,11 @@ const PostItem: FC<IProps> = ({ item }) => {
                         </CardActionsItem>
                     </Box>
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                        <Arrows>
-                            <KeyboardArrowUpIcon/>
+                        <Arrows sx={{ color: item.userLiked ? '#00C9A7' : '' }} onClick={() => dispatch(likeAsync(item.id))}>
+                            <KeyboardArrowUpIcon />
                         </Arrows>
-                        <Typography sx={{ pl: 1, pr: 1 }}>0</Typography>
-                        <Arrows>
+                        <Typography sx={{ pl: 1, pr: 1 }}>{item.likes - item.dislikes}</Typography>
+                        <Arrows sx={{ color: item.userDisliked ? 'red' : '' }}  onClick={() => dispatch(dislikeAsync(item.id))}>
                             <KeyboardArrowDownIcon/>
                         </Arrows>
                     </Box>

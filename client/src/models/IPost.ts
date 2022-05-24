@@ -8,6 +8,10 @@ export interface IPost {
     title: string;
     content: string;
     comments?: IComment[];
+    likes?: number;
+    dislikes?: number;
+    userDisliked?: boolean;
+    userLiked?: boolean;
 }
 // interface IComment {
 //     id: string;

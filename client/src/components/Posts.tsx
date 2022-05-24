@@ -14,7 +14,7 @@ const Posts = () => {
     useEffect(() => {
         dispatch(getPosts())
     }, [dispatch])    
-
+    
     return (
         <Box>            
             {posts && posts.map((item: IPost, index: number) => (

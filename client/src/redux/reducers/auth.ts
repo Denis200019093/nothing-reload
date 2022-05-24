@@ -11,13 +11,11 @@ export interface AuthResponse {
 export const loginAsync = createAsyncThunk(
     'auth/loginAsync',
     async (user: IUser, { rejectWithValue, dispatch }) => {
-        const { data } = await $api.post<AuthResponse>('/login', user)
+        const { data } = await $api.post<AuthResponse>('/login', user)        
         dispatch(login(user))
-        console.log(data.token);
         
         Cookies.set('user', data.token, { expires: 7 })
         localStorage.setItem('token', data.token)
-
     }
 )
 
@@ -26,6 +24,14 @@ export const registrationAsync = createAsyncThunk(
     async (user: IUser, { rejectWithValue, dispatch }) => {
         await $api.post('/registration', user)
         dispatch(registration(user))
+    }
+)
+
+export const getUserInfoAsync = createAsyncThunk(
+    'auth/checkeUserAsync',
+    async (_, { rejectWithValue, dispatch }) => {
+        const { data } = await $api.get('/userinfo')        
+        dispatch(setUserInfo(data))
     }
 )
   
@@ -42,9 +48,12 @@ const authSlice = createSlice({
         },
         registration(state, action: PayloadAction<IUser>) {
             state.authUser = action.payload
+        },
+        setUserInfo(state, action: PayloadAction<IUser>) {
+            state.authUser = action.payload
         }
     }
 });
 
-export const { login, registration } = authSlice.actions;
+export const { login, registration, setUserInfo } = authSlice.actions;
 export default authSlice.reducer

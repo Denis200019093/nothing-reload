@@ -42,20 +42,37 @@ const Home: FC = () => {
             <Box>
                 <TextField
                     name='username'
-                    placeholder='username'
+                    placeholder='Username'
                     variant='outlined'
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
                 />
                 <TextField
+                    name='email'
+                    placeholder='Email'
+                    variant='outlined'
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                />
+                <TextField
                     name='password'
                     placeholder='password'
+                    type='Password'
                     variant='outlined'
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                 />
+                <TextField
+                    name='passwordconfirm'
+                    placeholder='Password Confirm'
+                    type='password'
+                    variant='outlined'
+                    value={passwordConfirm}
+                    onChange={(e) => setConfirm(e.target.value)}
+                />
 
                 <Button onClick={() => dispatch(loginAsync({ username, password }))}>Login</Button>
+                <Button onClick={() => dispatch(registrationAsync({ username, email, password, passwordConfirm }))}>Registraation</Button>
             </Box>
             <Posts/>
         </Box>
