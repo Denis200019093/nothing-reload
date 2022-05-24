@@ -6,6 +6,7 @@ import com.nukem.nothingreloaded.entity.User;
 import lombok.Data;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Data
 public class PostDto {
@@ -14,7 +15,7 @@ public class PostDto {
     private String title;
     private String content;
     private UserDto author;
-    private List<Comment> comments;
+    private List<CommentDto> comments;
     private Long likes;
     private Long dislikes;
     private boolean isUserLiked;
@@ -26,20 +27,13 @@ public class PostDto {
         title = post.getTitle();
         content = post.getContent();
         author = new UserDto(post.getAuthor());
-        comments = post.getComments();
         likes = post.getLikesCount();
         dislikes = post.getDislikesCount();
     }
 
     public static PostDto convertPostToDto(Post post, User user) {
         PostDto postDto = new PostDto(post);
-//        setId(post.getId());
-//        setTitle(post.getTitle());
-//        setContent(post.getContent());
-//        setAuthor(new UserDto(post.getAuthor()));
-//        setComments(post.getComments());
-//        setLikes(post.getLikesCount());
-//        setDislikes(post.getDislikesCount());
+        postDto.setComments(post.getComments().stream().map((comment -> CommentDto.convertCommentToDto(comment, user))).collect(Collectors.toList()));
         postDto.setUserLiked(post.getLikes().contains(user));
         postDto.setUserDisliked(post.getDislikes().contains(user));
         return postDto;
