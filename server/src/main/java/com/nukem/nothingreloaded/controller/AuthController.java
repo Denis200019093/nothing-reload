@@ -1,6 +1,7 @@
 package com.nukem.nothingreloaded.controller;
 
 import com.nukem.nothingreloaded.entity.User;
+import com.nukem.nothingreloaded.entity.dto.UserDto;
 import com.nukem.nothingreloaded.security.jwt.JwtRequest;
 import com.nukem.nothingreloaded.security.jwt.JwtResponse;
 import com.nukem.nothingreloaded.security.jwt.JwtTokenUtil;
@@ -49,7 +50,7 @@ public class AuthController {
     }
 
     @GetMapping("/userinfo")
-    public ResponseEntity<User> userInfo(@AuthenticationPrincipal User user) {
-        return ResponseEntity.ok(user);
+    public ResponseEntity<UserDto> userInfo(@AuthenticationPrincipal User user) {
+        return ResponseEntity.ok(new UserDto(user));
     }
 }

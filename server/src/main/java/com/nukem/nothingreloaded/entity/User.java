@@ -26,17 +26,17 @@ public class User implements UserDetails{
     private Long id;
     @Size(min=2, message = "Too short")
     private String username;
-    @JsonIgnore
+
     @Size(min=2, message = "Too short")
     private String password;
-    @JsonIgnore
+
     @Transient
     private String passwordConfirm;
-    @JsonIgnore
+
     @Email
     private String email;
 
-    @JsonIgnore
+
     @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
     @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))
     @Enumerated(EnumType.STRING)
@@ -49,27 +49,27 @@ public class User implements UserDetails{
         this.password = password;
         this.email = email;
     }
-    @JsonIgnore
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return getRoles();
     }
-    @JsonIgnore
+
     @Override
     public boolean isAccountNonExpired() {
         return true;
     }
-    @JsonIgnore
+
     @Override
     public boolean isAccountNonLocked() {
         return true;
     }
-    @JsonIgnore
+
     @Override
     public boolean isCredentialsNonExpired() {
         return true;
     }
-    @JsonIgnore
+
     @Override
     public boolean isEnabled() {
         return true;
