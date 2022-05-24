@@ -13,7 +13,8 @@ $api.interceptors.request.use((config: any) => {
     
     if ( config.url.includes('/login') 
         || config.url.includes('/registration') 
-        || (config.url.includes('/posts') && config.method.includes('get') && token !== null) ) {
+        || (config.url.includes('/posts') && config.method.includes('get') && token === null) 
+        ) {
         return config
     } else {
         config.headers.Authorization = `Bearer ${localStorage.getItem('token')}`

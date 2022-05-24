@@ -7,7 +7,6 @@ import com.nukem.nothingreloaded.entity.dto.PostDto;
 import com.nukem.nothingreloaded.repository.UserRepo;
 import com.nukem.nothingreloaded.service.CommentService;
 import com.nukem.nothingreloaded.service.PostService;
-import com.nukem.nothingreloaded.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

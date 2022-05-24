@@ -1,6 +1,5 @@
 package com.nukem.nothingreloaded.entity.dto;
 
-import com.nukem.nothingreloaded.entity.Comment;
 import com.nukem.nothingreloaded.entity.Post;
 import com.nukem.nothingreloaded.entity.User;
 import lombok.Data;
