@@ -7,10 +7,13 @@ export const $api = axios.create({
     baseURL: API_URL
 })
 
+const token = localStorage.getItem('token')
 
 $api.interceptors.request.use((config: any) => {
     
-    if ( config.url.includes('/login') || config.url.includes('/registration') || (config.url.includes('/posts') && config.method.includes('get')) ) {
+    if ( config.url.includes('/login') 
+        || config.url.includes('/registration') 
+        || (config.url.includes('/posts') && config.method.includes('get') && token !== null) ) {
         return config
     } else {
         config.headers.Authorization = `Bearer ${localStorage.getItem('token')}`
