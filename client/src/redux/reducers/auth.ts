@@ -8,6 +8,7 @@ export interface AuthResponse {
     token: string;
     user: IUser
 }
+
 export const loginAsync = createAsyncThunk(
     'auth/loginAsync',
     async (user: IUser, { rejectWithValue, dispatch }) => {
@@ -34,9 +35,18 @@ export const getUserInfoAsync = createAsyncThunk(
         dispatch(setUserInfo(data))
     }
 )
+
+export const logOut = createAsyncThunk(
+    'auth/logOut',
+    (_, { rejectWithValue, dispatch }) => {
+        dispatch(setLogOut())
+        Cookies.remove('user')
+        localStorage.removeItem('token')
+    }
+)
   
 const initialState = {
-    authUser: {} as IUser,
+    authUser: {} as IUser | any
 }
 
 const authSlice = createSlice({
@@ -51,9 +61,12 @@ const authSlice = createSlice({
         },
         setUserInfo(state, action: PayloadAction<IUser>) {
             state.authUser = action.payload
+        },
+        setLogOut(state) {
+            state.authUser = {}
         }
     }
 });
 
-export const { login, registration, setUserInfo } = authSlice.actions;
+export const { login, registration, setUserInfo, setLogOut } = authSlice.actions;
 export default authSlice.reducer

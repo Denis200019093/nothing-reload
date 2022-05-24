@@ -8,7 +8,7 @@ import DensityMediumIcon from '@mui/icons-material/DensityMedium';
 
 import logo from '../assets/third.png'
 import { Link } from 'react-router-dom';
-import { getUserInfoAsync } from '../redux/reducers/auth';
+import { getUserInfoAsync, logOut } from '../redux/reducers/auth';
 
 const Search = styled('div')(({ theme }) => ({
     position: 'relative',
@@ -110,15 +110,15 @@ const Header = () => {
                 <HeaderSide sx={{ justifyContent: 'end' }} item md={3}>
                     <Typography 
                         variant='h4' 
-                        sx={{ 
-                            border: '2px solid #000', 
-                            p: '0 10px', 
-                            borderRadius: '50%' 
-                        }}>
-                            {authUser.username?.slice(0,1).toUpperCase() || 
-                            <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
+                        sx={{ p: '0 10px' }}>
+                            {(authUser.username?.slice(0,1).toUpperCase()) || 
+                            <Typography>User is gone</Typography>
                         }</Typography>
+                        <>
+                            {authUser ? <Button onClick={() => dispatch(logOut())} variant='contained'>Log out</Button> : null}
+                        </>
                 </HeaderSide>
+                
             </HeaderBlock>
         </AppBar>
     )

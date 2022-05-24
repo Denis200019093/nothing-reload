@@ -9,10 +9,25 @@ export const $api = axios.create({
 
 
 $api.interceptors.request.use((config: any) => {
-    console.log(config);
     
-    if ( !config.url.includes('/login') || !config.url.includes('/registration') ) {
+    // if ( config.url.includes('/login') || config.url.includes('/registration') || (!config.url.includes('/posts') && !config.method.includes('get') ) {
+    //     return config
+    // } else {
+    //     config.headers.Authorization = `Bearer ${localStorage.getItem('token')}`
+    // }
+    // console.log();
+
+    // if ( config.url.includes('/login') || config.url.includes('/registration') || (config.url.includes('/posts') && config.method.includes('get')) ) {
+    //     return 
+    // } else {
+    //     config.headers.Authorization = `Bearer ${localStorage.getItem('token')}`
+
+    // }
+    
+    if ( !config.url.includes('/login') || !config.url.includes('/registration') || (!config.url.includes('/posts') && !config.method.includes('get')) ) {
         config.headers.Authorization = `Bearer ${localStorage.getItem('token')}`
+        console.log('ROken');
+        
     }
     
     return config;
