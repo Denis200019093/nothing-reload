@@ -1,4 +1,4 @@
-import React, { useState, MouseEvent, FC } from 'react'
+import React, { useState, MouseEvent, FC, useCallback } from 'react'
 import { Link } from 'react-router-dom'
 import { 
     Card, CardActions, CardContent,
@@ -6,6 +6,7 @@ import {
     Avatar, Menu, MenuItem, Box,
     TextField
 } from '@mui/material';
+import { SnackbarProvider, VariantType, useSnackbar } from 'notistack';
 
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
@@ -17,7 +18,8 @@ import { IPost } from './../models/IPost';
 import { IUser } from '../models/IUser';
 import { styled, alpha } from '@mui/material/styles';
 import { likeAsync, dislikeAsync } from '../redux/reducers/posts';
-import { useAppDispatch } from '../hooks/useTypedSelector';
+import { useAppDispatch, useTypedSelector } from '../hooks/useTypedSelector';
+import ErrorMessage from './ErrorMessage';
 
 
 export const CardActionsItem = styled(Box)(({ theme }) => ({
@@ -53,13 +55,11 @@ interface IProps {
 }
 
 const PostItem: FC<IProps> = ({ item }) => {
-
+    
     const dispatch = useAppDispatch()
-
-    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-
-    const [ like, setLike ] = useState<boolean>(false);
-    const [ dislike, setDislike ] = useState<boolean>(false);
+    const { authUser } = useTypedSelector(state => state.auth)
+    const { errorMessage } = useTypedSelector(state => state.posts)
+    const [ anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
     const open = Boolean(anchorEl);
 
@@ -70,7 +70,6 @@ const PostItem: FC<IProps> = ({ item }) => {
     const handleClose = () => {
         setAnchorEl(null);
     };
-    console.log(item);
     
     return (
         <Card sx={{ mb: 4, mt: 2 }}>
@@ -128,11 +127,19 @@ const PostItem: FC<IProps> = ({ item }) => {
                         </CardActionsItem>
                     </Box>
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                        <Arrows sx={{ color: item.userLiked ? '#00C9A7' : '' }} onClick={() => dispatch(likeAsync(item.id))}>
+                        <Arrows 
+                            sx={{ color: item.userLiked ? '#00C9A7' : '' }} 
+                            onClick={() => {
+                                dispatch(likeAsync(item.id))
+                            }}>
                             <KeyboardArrowUpIcon />
                         </Arrows>
+                    
                         <Typography sx={{ pl: 1, pr: 1 }}>{item.likes - item.dislikes}</Typography>
-                        <Arrows sx={{ color: item.userDisliked ? 'red' : '' }}  onClick={() => dispatch(dislikeAsync(item.id))}>
+
+                        <Arrows 
+                            sx={{ color: item.userDisliked ? 'red' : '' }}  
+                            onClick={() => dispatch(dislikeAsync(item.id))}>
                             <KeyboardArrowDownIcon/>
                         </Arrows>
                     </Box>

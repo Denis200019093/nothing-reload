@@ -9,6 +9,7 @@ import { publicRoutes } from './routes';
 import { Provider } from 'react-redux';
 
 import { setupStore } from './redux/store'
+import ErrorMessage from './components/ErrorMessage';
 
 const store = setupStore()
 
@@ -24,7 +25,7 @@ export const theme = createTheme( {
 });
 
 const App: FC = () => {
-    return (
+  return (
 		<Provider store={store}>
 			<ThemeProvider theme={theme}>
 				<Router>
@@ -45,12 +46,12 @@ const App: FC = () => {
 								<Comments/>
 							</Grid>
 						</Grid>
+						<ErrorMessage/>
 					</Container>
 				</Router>
 			</ThemeProvider>
 		</Provider>
-		
-    );
+  );
 }
 
 export default App;

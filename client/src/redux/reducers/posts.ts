@@ -3,16 +3,20 @@ import Cookies from 'js-cookie'
 
 import { $api } from '../../http'
 import { IPost, IComment } from '../../models/IPost'
+import { AuthResponse } from './auth';
+import ApiError from '../../exceptions/api-error'
 
-const token = Cookies.get('user')
+const token = localStorage.getItem('token')
 
 export const getPosts = createAsyncThunk(
     'posts/getPosts',
     async (_, { rejectWithValue, dispatch }) => {
-        console.log(token);
-        
-        const { data } = await $api.get('/posts')
-        dispatch(setPosts(data))
+        try {
+            const { data } = await $api.get('/posts')
+            dispatch(setPosts(data))
+        } catch (error) {
+            rejectWithValue('Не удалось')
+        }  
     }
 )
 
@@ -20,7 +24,6 @@ export const getPostDetails = createAsyncThunk(
     'posts/getPostDetails',
     async (id: any, { rejectWithValue, dispatch }) => {
         const { data } = await $api.get(`/posts/${id}`)
-        
         dispatch(setPostDetails(data))
     }
 )
@@ -29,54 +32,92 @@ export const createPostAsync = createAsyncThunk(
     'posts/createPostAsync',
     async (post: IPost, { rejectWithValue, dispatch }) => {
         const { data } = await $api.post('/posts', post)
-        
         dispatch(createPost(data))
     }
 )
 export const createCommentAsync = createAsyncThunk(
     'posts/createCommentAsync',
     async ({ text, id }: IComment, { rejectWithValue, dispatch }) => {
-        
-        const { data } = await $api.post(`/posts/${id}/comment`, {text})
-        
-        dispatch(createComment(data))
+        try {
+
+            if ( !token ) {
+                dispatch(setError(true))
+                dispatch(setErrorMessage('Авторизуйтесь'))
+                throw ApiError.UnauthorizedError()
+            }
+    
+            const { data } = await $api.post(`/posts/${id}/comment`, {text})
+            dispatch(createComment(data))
+        } catch (error) {
+            return rejectWithValue(error)
+        }
+       
     }
 )
 
 export const likeAsync = createAsyncThunk(
     'posts/likeAsync',
-    async (id: any, { rejectWithValue, dispatch }) => { 
-        const res = await $api.post(`/posts/${id}/like`, id)
-        console.log(res);
+    async (id: string, { rejectWithValue, dispatch }) => { 
+        try {
+
+            if ( !token ) {
+                dispatch(setError(true))
+                dispatch(setErrorMessage('Авторизуйтесь'))
+                throw ApiError.UnauthorizedError()
+            }
+
+            await $api.post(`/posts/${id}/like`, id)       
+            dispatch(likePost(id))
+        } catch (err) {
+            rejectWithValue(err)
+        }
         
-        dispatch(likePost(id))
     }
 )
 
 export const dislikeAsync = createAsyncThunk(
     'posts/dislikeAsync',
     async (id: string, { rejectWithValue, dispatch }) => {
+        try {
+            if ( !token ) {
+                dispatch(setError(true))
+                dispatch(setErrorMessage('Авторизуйтесь'))
+                throw ApiError.UnauthorizedError()
+            }
+    
+            await $api.post(`/posts/${id}/dislike`, id)
+            dispatch(dislikePost(id))
+        } catch (error) {
+            rejectWithValue(error)
+        }
         
-        await $api.post(`/posts/${id}/dislike`, id)
-        
-        dispatch(dislikePost(id))
     }
 )
 
 interface PostsState {
     posts: IPost[];
     postDetails: IPost;
+    errorMessage: string;
+    error: boolean
 }
   
 const initialState: PostsState = {
     posts: [],
-    postDetails: {} as IPost
+    postDetails: {} as IPost,
+    errorMessage: '',
+    error: false
 }
 
 const postsSlice = createSlice({
     name: 'posts',
     initialState,
     reducers: {
+        setErrorMessage(state, action: PayloadAction<string>) {
+            state.errorMessage = action.payload
+        },
+        setError(state, action: PayloadAction<boolean>) {
+            state.error = action.payload
+        },
         setPosts(state, action: PayloadAction<IPost[]>) {
             state.posts = action.payload
         },
@@ -148,5 +189,5 @@ const postsSlice = createSlice({
     }
 });
 
-export const { setPosts, setPostDetails, createPost, createComment, likePost, dislikePost } = postsSlice.actions;
+export const { setErrorMessage, setError, setPosts, setPostDetails, createPost, createComment, likePost, dislikePost } = postsSlice.actions;
 export default postsSlice.reducer
