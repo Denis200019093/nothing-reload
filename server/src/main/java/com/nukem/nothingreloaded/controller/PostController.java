@@ -4,13 +4,16 @@ import com.nukem.nothingreloaded.entity.Comment;
 import com.nukem.nothingreloaded.entity.Post;
 import com.nukem.nothingreloaded.entity.User;
 import com.nukem.nothingreloaded.entity.dto.PostDto;
+import com.nukem.nothingreloaded.repository.UserRepo;
 import com.nukem.nothingreloaded.service.CommentService;
 import com.nukem.nothingreloaded.service.PostService;
+import com.nukem.nothingreloaded.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.parameters.P;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -23,10 +26,13 @@ import java.util.stream.Collectors;
 public class PostController {
 
     private final PostService postService;
+    private final UserRepo userRepo;
     private final CommentService commentService;
 
     @GetMapping
-    public ResponseEntity<List<PostDto>> getAllPosts(@AuthenticationPrincipal User user) {
+    public ResponseEntity<List<PostDto>> getAllPosts() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = userRepo.findByUsername(auth.getName()).orElse(null);
         List<PostDto> postList = postService.findAll().stream().map((post) -> PostDto.convertPostToDto(post, user)).collect(Collectors.toList());
         return new ResponseEntity<>(postList, HttpStatus.OK);
     }
