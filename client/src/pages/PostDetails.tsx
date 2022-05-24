@@ -15,6 +15,7 @@ import { getPostDetails, createCommentAsync } from '../redux/reducers/posts';
 import { CardActionsItem, Arrows } from '../components/PostItem'
 import CommentItem from '../components/CommentItem';
 import { IComment } from '../models/IPost';
+import { likeAsync, dislikeAsync } from '../redux/reducers/posts'
 
 const CommentsBlock = styled(Box)(({ theme }) => ({
 	display: 'flex',
@@ -75,6 +76,7 @@ const PostDetails = () => {
     useEffect(() => {
         dispatch(getPostDetails(id))
     }, [dispatch, id])
+    console.log(postDetails);
     
     return (
         <Box sx={{ pl: 3, pr: 3 }}>
@@ -96,11 +98,11 @@ const PostDetails = () => {
                         </CardActionsItem>
                     </Box>
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                        <Arrows>
+                        <Arrows onClick={() => dispatch(likeAsync(postDetails.id))}>
                             <KeyboardArrowUpIcon/>
                         </Arrows>
-                        <Typography sx={{ pl: 1, pr: 1 }}>0</Typography>
-                        <Arrows>
+                        <Typography sx={{ pl: 1, pr: 1 }}>{postDetails.likes - postDetails.dislikes}</Typography>
+                        <Arrows onClick={() => dispatch(dislikeAsync(postDetails.id))}>
                             <KeyboardArrowDownIcon/>
                         </Arrows>
                     </Box>

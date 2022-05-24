@@ -24,6 +24,8 @@ export const getPostDetails = createAsyncThunk(
     'posts/getPostDetails',
     async (id: any, { rejectWithValue, dispatch }) => {
         const { data } = await $api.get(`/posts/${id}`)
+        console.log(data);
+        
         dispatch(setPostDetails(data))
     }
 )
@@ -58,8 +60,9 @@ export const createCommentAsync = createAsyncThunk(
 export const likeAsync = createAsyncThunk(
     'posts/likeAsync',
     async (id: string, { rejectWithValue, dispatch }) => { 
+        
         try {
-
+            
             if ( !token ) {
                 dispatch(setError(true))
                 dispatch(setErrorMessage('Авторизуйтесь'))

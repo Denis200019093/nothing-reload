@@ -1,12 +1,10 @@
-import React, { useState, MouseEvent, FC, useCallback } from 'react'
+import React, { useState, MouseEvent, FC } from 'react'
 import { Link } from 'react-router-dom'
 import { 
     Card, CardActions, CardContent,
     CardMedia, Button, Typography,
     Avatar, Menu, MenuItem, Box,
-    TextField
 } from '@mui/material';
-import { SnackbarProvider, VariantType, useSnackbar } from 'notistack';
 
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
@@ -18,8 +16,7 @@ import { IPost } from './../models/IPost';
 import { IUser } from '../models/IUser';
 import { styled, alpha } from '@mui/material/styles';
 import { likeAsync, dislikeAsync } from '../redux/reducers/posts';
-import { useAppDispatch, useTypedSelector } from '../hooks/useTypedSelector';
-import ErrorMessage from './ErrorMessage';
+import { useAppDispatch, } from '../hooks/useTypedSelector';
 
 
 export const CardActionsItem = styled(Box)(({ theme }) => ({
@@ -57,8 +54,6 @@ interface IProps {
 const PostItem: FC<IProps> = ({ item }) => {
     
     const dispatch = useAppDispatch()
-    const { authUser } = useTypedSelector(state => state.auth)
-    const { errorMessage } = useTypedSelector(state => state.posts)
     const [ anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
     const open = Boolean(anchorEl);
@@ -70,7 +65,10 @@ const PostItem: FC<IProps> = ({ item }) => {
     const handleClose = () => {
         setAnchorEl(null);
     };
-    
+    console.log(item);
+    console.log(item.userLiked);
+    console.log(item.userDisliked);
+
     return (
         <Card sx={{ mb: 4, mt: 2 }}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', p: 2, pb: 0 }}>
