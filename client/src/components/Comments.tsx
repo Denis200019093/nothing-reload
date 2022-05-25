@@ -1,8 +1,22 @@
-import React from 'react'
+import { Box } from '@mui/material'
+import React, { FC } from 'react'
+import { IComment } from '../models/IPost'
+import CommentItem from './CommentItem'
 
-const Comments = () => {
+interface IProps {
+    comments: IComment[]
+}
+
+const Comments: FC<IProps> = ({ comments }) => {
     return (
-        <div>Comments</div>
+        <Box>
+            {comments?.map((item: IComment, index: number) => (
+                <CommentItem
+                    key={index}
+                    comment={item}
+                />
+            ))}
+        </Box>
     )
 }
 

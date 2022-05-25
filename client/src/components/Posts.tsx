@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react'
-import { Box } from '@mui/material'
+import React, { useEffect, Suspense } from 'react'
+import { Box, Skeleton  } from '@mui/material'
 
 import { useAppDispatch, useTypedSelector } from '../hooks/useTypedSelector';
 import { getPosts } from '../redux/reducers/posts';
@@ -18,10 +18,13 @@ const Posts = () => {
     return (
         <Box>            
             {posts && posts.map((item: IPost, index: number) => (
-                <PostItem
-                    key={index}
-                    item={item}
-                />
+                <Suspense fallback={<Skeleton animation="wave" variant="circular" width={40} height={40} />}>
+                    <PostItem
+                        key={index}
+                        item={item}
+                    />
+
+                </Suspense>
             ))}
         </Box>
     )

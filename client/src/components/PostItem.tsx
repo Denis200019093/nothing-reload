@@ -116,10 +116,12 @@ const PostItem: FC<IProps> = ({ item }) => {
             <CardActions sx={{ p: 2 }}>
                 <Box sx={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <Box sx={{ display: 'flex' }}>
-                        <CardActionsItem>
-                            <ChatBubbleOutlineIcon/>
-                            <Typography variant="body2">{item.comments?.length}</Typography>
-                        </CardActionsItem>
+                            <Link to={`/posts/${item.id}`}>
+                                <CardActionsItem>
+                                    <ChatBubbleOutlineIcon/>
+                                    <Typography variant="body2">{item.comments?.length}</Typography>
+                                </CardActionsItem>
+                            </Link>
                         <CardActionsItem>
                             <BookmarkBorderIcon/>
                         </CardActionsItem>

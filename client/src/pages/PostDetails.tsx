@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, Suspense } from 'react'
 import { useParams } from 'react-router-dom';
 
 import { Box, Typography, Avatar, TextareaAutosize, Button } from '@mui/material';
@@ -16,6 +16,9 @@ import { CardActionsItem, Arrows } from '../components/PostItem'
 import CommentItem from '../components/CommentItem';
 import { IComment } from '../models/IPost';
 import { likeAsync, dislikeAsync } from '../redux/reducers/posts'
+import Spinner from '../components/Spinner';
+const Comments = React.lazy(() => import('../components/Comments'));
+
 
 const CommentsBlock = styled(Box)(({ theme }) => ({
 	display: 'flex',
@@ -111,7 +114,7 @@ const PostDetails = () => {
             <CommentsBlock>
                 <FlexBlocks>
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                        <Typography variant='h5'>21</Typography>
+                        <Typography variant='h5'>{postDetails.comments?.length}</Typography>
                         <Typography sx={{ ml: 1 }} variant='h5'>comments</Typography>
                     </Box>
                     <SortIcon/>
@@ -135,7 +138,10 @@ const PostDetails = () => {
                         <ActiveBlock onClick={() => setActive(true)}>Comment text...</ActiveBlock>
                     }
                 </Box>
-                <Box>
+                <Suspense fallback={<Spinner/>}>
+                    <Comments comments={postDetails.comments}/>
+                </Suspense>
+                {/* <Box>
                     {postDetails.comments && 
                      postDetails.comments.map((comm: IComment, index: number) => (
                         <CommentItem
@@ -143,7 +149,7 @@ const PostDetails = () => {
                             comment={comm}
                         />
                     ))}
-                </Box>
+                </Box> */}
             </CommentsBlock>
         </Box>
     )

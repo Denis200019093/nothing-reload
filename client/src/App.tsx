@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { Routes, Route, BrowserRouter as Router  } from 'react-router-dom'
-import { Container, ThemeProvider, createTheme, Grid } from '@mui/material';
+import { Container, ThemeProvider, createTheme, Grid, Box } from '@mui/material';
 
 import Header from './components/Header';
 import LeftBar from './components/LeftBar';
@@ -43,7 +43,8 @@ const App: FC = () => {
 								</Routes>
 							</Grid>
 							<Grid item md={3}>
-								<Comments/>
+								<Box>Box</Box>
+								{/* <Comments/> */}
 							</Grid>
 						</Grid>
 						<ErrorMessage/>
