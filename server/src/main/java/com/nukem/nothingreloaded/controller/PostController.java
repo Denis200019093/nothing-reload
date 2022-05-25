@@ -3,6 +3,7 @@ package com.nukem.nothingreloaded.controller;
 import com.nukem.nothingreloaded.entity.Comment;
 import com.nukem.nothingreloaded.entity.Post;
 import com.nukem.nothingreloaded.entity.User;
+import com.nukem.nothingreloaded.entity.dto.CommentDto;
 import com.nukem.nothingreloaded.entity.dto.PostDto;
 import com.nukem.nothingreloaded.repository.UserRepo;
 import com.nukem.nothingreloaded.service.CommentService;
@@ -73,16 +74,16 @@ public class PostController {
     }
 
     @PostMapping("/{post}/comment")
-    public ResponseEntity<Comment> addComment(@AuthenticationPrincipal User user,
+    public ResponseEntity<CommentDto> addComment(@AuthenticationPrincipal User user,
                                               @Valid @RequestBody Comment comment,
                                               @PathVariable(required = false) Post post) {
         if (user == null) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        if (post == null) return new ResponseEntity<>(comment, HttpStatus.BAD_REQUEST);
+        if (post == null) return new ResponseEntity<>(new CommentDto(comment), HttpStatus.BAD_REQUEST);
         comment.setPost(post);
         comment.setAuthor(user);
         commentService.saveComment(comment);
 
-        return new ResponseEntity<>(comment, HttpStatus.CREATED);
+        return new ResponseEntity<>(new CommentDto(comment), HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{id}/comment")

@@ -15,10 +15,7 @@ public class PostDto {
     private String content;
     private UserDto author;
     private List<CommentDto> comments;
-    private Long likes;
-    private Long dislikes;
-    private boolean isUserLiked;
-    private boolean isUserDisliked;
+    private Rate rate;
 
 
     public PostDto(Post post) {
@@ -26,15 +23,14 @@ public class PostDto {
         title = post.getTitle();
         content = post.getContent();
         author = new UserDto(post.getAuthor());
-        likes = post.getLikesCount();
-        dislikes = post.getDislikesCount();
+        rate = new Rate(post.getLikesCount(), post.getDislikesCount());
     }
 
     public static PostDto convertPostToDto(Post post, User user) {
         PostDto postDto = new PostDto(post);
         postDto.setComments(post.getComments().stream().map((comment -> CommentDto.convertCommentToDto(comment, user))).collect(Collectors.toList()));
-        postDto.setUserLiked(post.getLikes().contains(user));
-        postDto.setUserDisliked(post.getDislikes().contains(user));
+        postDto.rate.setUserLiked(post.getLikes().contains(user));
+        postDto.rate.setUserDisliked(post.getDislikes().contains(user));
         return postDto;
     }
 }
