@@ -76,11 +76,11 @@ public class Post {
         likes.remove(user);
     }
 
-    public long getDislikesCount() {
+    public int getDislikesCount() {
         return dislikes.size();
     }
 
-    public long getLikesCount() {
+    public int getLikesCount() {
         return likes.size();
     }
 }

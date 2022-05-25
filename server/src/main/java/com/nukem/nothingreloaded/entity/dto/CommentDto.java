@@ -11,23 +11,19 @@ public class CommentDto {
     private String title;
     private String text;
     private UserDto author;
-    private Long likes;
-    private Long dislikes;
-    private boolean isUserLiked;
-    private boolean isUserDisliked;
+    private Rate rate;
 
     public CommentDto(Comment comment) {
         id = comment.getId();
         text = comment.getText();
         author = new UserDto(comment.getAuthor());
-        likes = comment.getLikesCount();
-        dislikes = comment.getDislikesCount();
+        rate = new Rate(comment.getLikesCount(), comment.getDislikesCount());
     }
 
     public static CommentDto convertCommentToDto(Comment comment, User user) {
         CommentDto commentDto = new CommentDto(comment);
-        commentDto.setUserLiked(comment.getLikes().contains(user));
-        commentDto.setUserDisliked(comment.getDislikes().contains(user));
+        commentDto.rate.setUserLiked(comment.getLikes().contains(user));
+        commentDto.rate.setUserDisliked(comment.getDislikes().contains(user));
         return commentDto;
     }
 
