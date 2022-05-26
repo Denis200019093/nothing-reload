@@ -13,7 +13,7 @@ import { closeModal, loginAsync, registrationAsync } from '../redux/reducers/aut
 import logo from '../assets/third.png'
 
 const Image = styled('img')(() => ({
-    maxWidth: '400px',
+    maxWidth: '300px',
     objectFit: 'cover'
 }));
 

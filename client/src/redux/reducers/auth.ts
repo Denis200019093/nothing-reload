@@ -67,9 +67,27 @@ export const logOut = createAsyncThunk(
         localStorage.removeItem('token')
     }
 )
+
+export const getProfileUser = createAsyncThunk(
+    'user/getProfileUser',
+    async (id: string, { rejectWithValue, dispatch }) => {
+        try {
+            const { data } = await $api.get(`/user/${id}`)        
+            dispatch(setProfileUser(data))
+        } catch (error) {
+            rejectWithValue(error)
+        }
+        
+    }
+)
+
+interface IProfile {
+    username: string
+}
   
 const initialState = {
     authUser: {} as IUser | any,
+    userProfile: {} as IProfile,
     openModal: false as boolean,
     isAuth: false as boolean
 }
@@ -99,6 +117,9 @@ const authSlice = createSlice({
         },
         closeModal(state) {
             state.openModal = false
+        },
+        setProfileUser(state, action: PayloadAction<IProfile>) {
+            state.userProfile = action.payload
         }
     }
 });
@@ -109,6 +130,7 @@ export const {
     setUserInfo, 
     setLogOut, 
     openModal,
-    closeModal 
+    closeModal,
+    setProfileUser
 } = authSlice.actions;
 export default authSlice.reducer

@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import { styled, alpha } from '@mui/material/styles';
-import { Box, AppBar, TextField, Button, InputBase, Avatar, Grid, Typography } from '@mui/material';
+import { Box, AppBar, Button, InputBase, Avatar, Grid, Menu, MenuItem } from '@mui/material';
+import LoginIcon from '@mui/icons-material/Login';
+import LogoutIcon from '@mui/icons-material/Logout';
 
 import { useAppDispatch, useTypedSelector } from '../hooks/useTypedSelector';
-
 import logo from '../assets/third.png'
 import { Link } from 'react-router-dom';
 import { getUserInfoAsync, logOut, openModal } from '../redux/reducers/auth';
@@ -42,7 +43,6 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 const HeaderBlock = styled(Grid)(() => ({
-    
     minHeight: '60px',
     padding: '5px 15px',
 }));
@@ -68,14 +68,14 @@ const Logo = styled('img')(() => ({
 const Header = () => {
 
     const dispatch = useAppDispatch()
-    const { authUser, isAuth } = useTypedSelector(state => state.auth)
+    const { isAuth } = useTypedSelector(state => state.auth)
 
     useEffect(() => {
         dispatch(getUserInfoAsync())
     }, [dispatch])
-    
+
     return (
-        <AppBar sx={{ mb: 1 }} position="static">
+        <AppBar position="static">
             <HeaderBlock container>
                 <HeaderSide item md={2.5}>
                     <Link to='/'>
@@ -103,22 +103,21 @@ const Header = () => {
                     >Create</Button>
                 </HeaderCenter>
                 <HeaderSide sx={{ justifyContent: 'end' }} item md={3}>
-                    <Typography 
-                        variant='h4' 
-                        sx={{ p: '0 10px' }}>
-                            {(authUser.username?.slice(0,1).toUpperCase()) || 
-                            <Typography>User is gone</Typography>
-                        }</Typography>
-                        <>
-                            {isAuth ?
-                                <Button onClick={() => dispatch(logOut())} variant='contained'>Log out</Button>
-                                : 
-                                <Button variant='contained' onClick={() => dispatch(openModal())}>Open modal</Button>
-                            }
-                        </>
+                    <>
+                        {isAuth ?
+                            <Box sx={{ display: 'flex', alignItems: 'center', position: 'relative' }}>
+                                <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
+                                <LogoutIcon sx={{ cursor: 'pointer' }} onClick={() => dispatch(logOut())}/>
+                            </Box>
+                            : 
+                            <LoginIcon sx={{ cursor: 'pointer' }} onClick={() => dispatch(openModal())}/>
+                        }
+                    </>
+                    
                 </HeaderSide>
                 
             </HeaderBlock>
+            
         </AppBar>
     )
 }

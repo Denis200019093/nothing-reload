@@ -26,13 +26,13 @@ export const theme = createTheme( {
 });
 
 const App: FC = () => {
-  return (
+  	return (
 		<Provider store={store}>
 			<ThemeProvider theme={theme}>
 				<Router>
 					<Container maxWidth='xl'>
-						<Header/>
 						<Grid container>
+							<Header/>
 							<Grid item md={2.5}>
 								<LeftBar/>
 							</Grid>
@@ -44,12 +44,13 @@ const App: FC = () => {
 								</Routes>
 							</Grid>
 							<Grid item md={3}>
-								<Box>Box</Box>
+								<Box></Box>
 								{/* <Comments/> */}
 							</Grid>
-						</Grid>
-						<ErrorMessage/>
+							<ErrorMessage/>
 						<Auth/>
+						</Grid>
+						
 					</Container>
 				</Router>
 			</ThemeProvider>
