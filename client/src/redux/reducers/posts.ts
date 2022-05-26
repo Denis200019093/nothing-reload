@@ -135,27 +135,40 @@ const postsSlice = createSlice({
         },
         likePost(state, action: PayloadAction<string>) { 
             state.posts = state.posts.map((item) => {
-                if ( item.id === action.payload ) {
+                const { id, rate } = item
+                const { rating, userDisliked, userLiked } = rate 
+
+                if ( id === action.payload ) {
                     
-                    if ( item.userDisliked ) { 
+                    if ( userDisliked ) { 
                         return {
                             ...item, 
-                            dislikes: item.dislikes - 1, 
-                            likes: item.likes + 1, 
-                            userDisliked: false,
-                            userLiked: true 
+                            rate: {
+                                rating: rating + 2, 
+                                userDisliked: false,
+                                userLiked: true 
+                            }
                         }
                     }
 
-                    if ( item.userLiked ) { 
+                    if ( userLiked ) { 
                         return {
                             ...item, 
-                            likes: item.likes - 1, 
-                            userLiked: false 
+                            rate: {
+                                rating: rating - 1, 
+                                userLiked: false 
+                            }  
                         }
                     }
 
-                    return { ...item, likes: item.likes + 1, userLiked: true, userDisliked: false }
+                    return { 
+                        ...item, 
+                        rate: {
+                            rating: rating + 1, 
+                            userLiked: true, 
+                            userDisliked: false 
+                        } 
+                    }
                 }
 
                 return item
@@ -163,27 +176,41 @@ const postsSlice = createSlice({
         },
         dislikePost(state, action: PayloadAction<string>) { 
             state.posts = state.posts.map((item) => {
-                if ( item.id === action.payload ) {
+                const { id, rate } = item
+                const { rating, userDisliked, userLiked } = rate
 
-                    if ( item.userLiked ) { 
+                if ( id === action.payload ) {
+
+                    if ( userLiked ) { 
                         return {
                             ...item, 
-                            dislikes: item.dislikes + 1, 
-                            likes: item.likes - 1, 
-                            userDisliked: true,
-                            userLiked: false 
+                            rate: {
+                                rating: rating - 2, 
+                                userDisliked: true,
+                                userLiked: false 
+                            }
                         }
                     }
 
-                    if ( item.userDisliked ) { 
+                    if ( userDisliked ) { 
                         return {
                             ...item, 
-                            dislikes: item.dislikes - 1, 
-                            userDisliked: false 
+                            rate: {
+                                rating: rating + 1, 
+                                userDisliked: false 
+                            }
+                            
                         }
                     }
 
-                    return {...item, dislikes: item.dislikes + 1, userLiked: false, userDisliked: true }
+                    return {
+                        ...item, 
+                        rate: {
+                            rating: rating - 1, 
+                            userLiked: false,
+                            userDisliked: true 
+                        }
+                    }
                 }
 
                 return item
@@ -192,5 +219,14 @@ const postsSlice = createSlice({
     }
 });
 
-export const { setErrorMessage, setError, setPosts, setPostDetails, createPost, createComment, likePost, dislikePost } = postsSlice.actions;
+export const { 
+    setErrorMessage, 
+    setError, 
+    setPosts, 
+    setPostDetails, 
+    createPost,
+    createComment, 
+    likePost, 
+    dislikePost 
+} = postsSlice.actions;
 export default postsSlice.reducer

@@ -10,6 +10,7 @@ import { Provider } from 'react-redux';
 
 import { setupStore } from './redux/store'
 import ErrorMessage from './components/ErrorMessage';
+import Auth from './components/Auth';
 
 const store = setupStore()
 
@@ -48,6 +49,7 @@ const App: FC = () => {
 							</Grid>
 						</Grid>
 						<ErrorMessage/>
+						<Auth/>
 					</Container>
 				</Router>
 			</ThemeProvider>

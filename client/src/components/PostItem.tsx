@@ -65,9 +65,6 @@ const PostItem: FC<IProps> = ({ item }) => {
     const handleClose = () => {
         setAnchorEl(null);
     };
-    console.log(item);
-    console.log(item.userLiked);
-    console.log(item.userDisliked);
 
     return (
         <Card sx={{ mb: 4, mt: 2 }}>
@@ -128,17 +125,17 @@ const PostItem: FC<IProps> = ({ item }) => {
                     </Box>
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
                         <Arrows 
-                            sx={{ color: item.userLiked ? '#00C9A7' : '' }} 
+                            sx={{ color: item.rate.userLiked ? '#00C9A7' : '' }} 
                             onClick={() => {
                                 dispatch(likeAsync(item.id))
                             }}>
                             <KeyboardArrowUpIcon />
                         </Arrows>
                     
-                        <Typography sx={{ pl: 1, pr: 1 }}>{item.likes - item.dislikes}</Typography>
+                        <Typography sx={{ pl: 1, pr: 1 }}>{item.rate.rating}</Typography>
 
                         <Arrows 
-                            sx={{ color: item.userDisliked ? 'red' : '' }}  
+                            sx={{ color: item.rate.userDisliked ? 'red' : '' }}  
                             onClick={() => dispatch(dislikeAsync(item.id))}>
                             <KeyboardArrowDownIcon/>
                         </Arrows>

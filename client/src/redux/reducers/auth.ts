@@ -69,7 +69,9 @@ export const logOut = createAsyncThunk(
 )
   
 const initialState = {
-    authUser: {} as IUser | any
+    authUser: {} as IUser | any,
+    openModal: false as boolean,
+    isAuth: false as boolean
 }
 
 const authSlice = createSlice({
@@ -78,18 +80,35 @@ const authSlice = createSlice({
     reducers: {
         login(state, action: PayloadAction<IUser>) {
             state.authUser = action.payload
+            state.isAuth = true
         },
         registration(state, action: PayloadAction<IUser>) {
             state.authUser = action.payload
+            state.isAuth = true
         },
         setUserInfo(state, action: PayloadAction<IUser>) {
             state.authUser = action.payload
+            state.isAuth = true
         },
         setLogOut(state) {
             state.authUser = {}
+            state.isAuth = false
+        },
+        openModal(state) {
+            state.openModal = true
+        },
+        closeModal(state) {
+            state.openModal = false
         }
     }
 });
 
-export const { login, registration, setUserInfo, setLogOut } = authSlice.actions;
+export const { 
+    login, 
+    registration, 
+    setUserInfo, 
+    setLogOut, 
+    openModal,
+    closeModal 
+} = authSlice.actions;
 export default authSlice.reducer

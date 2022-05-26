@@ -79,7 +79,6 @@ const PostDetails = () => {
     useEffect(() => {
         dispatch(getPostDetails(id))
     }, [dispatch, id])
-    console.log(postDetails);
     
     return (
         <Box sx={{ pl: 3, pr: 3 }}>
@@ -88,8 +87,8 @@ const PostDetails = () => {
                     <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
                     <Typography sx={{ ml: 1 }}>Nothing</Typography>
                 </Box>
-                <Typography sx={{ p: '15px 0' }} variant='h4'>{postDetails.title}</Typography>
-                <Typography variant='body2'>{postDetails.content}</Typography>
+                <Typography sx={{ p: '15px 0' }} variant='h4'>{postDetails?.title}</Typography>
+                <Typography variant='body2'>{postDetails?.content}</Typography>
                 <FlexBlocks sx={{ mt: 2 }}>
                     <Box sx={{ display: 'flex' }}>
                         <CardActionsItem sx={{ pl :0 }}>
@@ -104,7 +103,7 @@ const PostDetails = () => {
                         <Arrows onClick={() => dispatch(likeAsync(postDetails.id))}>
                             <KeyboardArrowUpIcon/>
                         </Arrows>
-                        <Typography sx={{ pl: 1, pr: 1 }}>{postDetails.likes - postDetails.dislikes}</Typography>
+                        <Typography sx={{ pl: 1, pr: 1 }}>{postDetails?.rate?.rating}</Typography>
                         <Arrows onClick={() => dispatch(dislikeAsync(postDetails.id))}>
                             <KeyboardArrowDownIcon/>
                         </Arrows>

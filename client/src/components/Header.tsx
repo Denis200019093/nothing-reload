@@ -3,12 +3,10 @@ import { styled, alpha } from '@mui/material/styles';
 import { Box, AppBar, TextField, Button, InputBase, Avatar, Grid, Typography } from '@mui/material';
 
 import { useAppDispatch, useTypedSelector } from '../hooks/useTypedSelector';
-import AppleIcon from '@mui/icons-material/Apple';
-import DensityMediumIcon from '@mui/icons-material/DensityMedium';
 
 import logo from '../assets/third.png'
 import { Link } from 'react-router-dom';
-import { getUserInfoAsync, logOut } from '../redux/reducers/auth';
+import { getUserInfoAsync, logOut, openModal } from '../redux/reducers/auth';
 
 const Search = styled('div')(({ theme }) => ({
     position: 'relative',
@@ -70,14 +68,11 @@ const Logo = styled('img')(() => ({
 const Header = () => {
 
     const dispatch = useAppDispatch()
-    const { authUser } = useTypedSelector(state => state.auth)
-    const [ activeInput, setActive ] = useState<boolean>(false)
+    const { authUser, isAuth } = useTypedSelector(state => state.auth)
 
     useEffect(() => {
         dispatch(getUserInfoAsync())
     }, [dispatch])
-
-    console.log(authUser);
     
     return (
         <AppBar sx={{ mb: 1 }} position="static">
@@ -115,7 +110,11 @@ const Header = () => {
                             <Typography>User is gone</Typography>
                         }</Typography>
                         <>
-                            {authUser ? <Button onClick={() => dispatch(logOut())} variant='contained'>Log out</Button> : null}
+                            {isAuth ?
+                                <Button onClick={() => dispatch(logOut())} variant='contained'>Log out</Button>
+                                : 
+                                <Button variant='contained' onClick={() => dispatch(openModal())}>Open modal</Button>
+                            }
                         </>
                 </HeaderSide>
                 
