@@ -5,14 +5,15 @@ import com.nukem.nothingreloaded.entity.User;
 import lombok.Data;
 
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserDto {
     private Long id;
     private String username;
-    private Set<User> subscriptions;
-    private Set<User> subscribers;
+    private Set<Long> subscriptions;
+    private Set<Long> subscribers;
 
     public UserDto(User user) {
         id = user.getId();
@@ -21,8 +22,8 @@ public class UserDto {
 
     public static UserDto convertUserToDto(User user) {
         UserDto userDto = new UserDto(user);
-        userDto.setSubscribers(userDto.getSubscribers());
-        userDto.setSubscriptions(userDto.getSubscriptions());
+        userDto.setSubscribers(user.getSubscribers().stream().map(User::getId).collect(Collectors.toSet()));
+        userDto.setSubscriptions(user.getSubscriptions().stream().map(User::getId).collect(Collectors.toSet()));
         return userDto;
     }
 }

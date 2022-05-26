@@ -20,7 +20,7 @@ public class Comment {
     private String text;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "author_id", nullable = true, updatable = false)
+    @JoinColumn(name = "author_id", nullable = false, updatable = false)
     private User author;
     @JsonBackReference
     @ManyToOne
@@ -29,16 +29,16 @@ public class Comment {
 
     @ManyToMany
     @JoinTable(
-            name = "post_likes",
-            joinColumns = {@JoinColumn(name = "post_id")},
+            name = "comment_likes",
+            joinColumns = {@JoinColumn(name = "comment_id")},
             inverseJoinColumns = {@JoinColumn(name = "user_id")}
     )
     private Set<User> likes = new HashSet<>();
 
     @ManyToMany
     @JoinTable(
-            name = "post_dislikes",
-            joinColumns = {@JoinColumn(name = "post_id")},
+            name = "comment_dislikes",
+            joinColumns = {@JoinColumn(name = "comment_id")},
             inverseJoinColumns = {@JoinColumn(name = "user_id")}
     )
     private Set<User> dislikes = new HashSet<>();
