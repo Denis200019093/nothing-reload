@@ -1,6 +1,5 @@
 package com.nukem.nothingreloaded.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -42,7 +41,7 @@ public class User implements UserDetails{
     @Enumerated(EnumType.STRING)
     private Set<Role> roles;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany
     @JoinTable(
             name = "user_subscriptions",
             joinColumns = { @JoinColumn(name = "channel_id") },
@@ -50,7 +49,7 @@ public class User implements UserDetails{
     )
     private Set<User> subscribers = new HashSet<>();
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany
     @JoinTable(
             name = "user_subscriptions",
             joinColumns = { @JoinColumn(name = "subscriber_id") },
@@ -101,6 +100,6 @@ public class User implements UserDetails{
 
     @Override
     public int hashCode() {
-        return getClass().hashCode();
+        return Objects.hash(id);
     }
 }

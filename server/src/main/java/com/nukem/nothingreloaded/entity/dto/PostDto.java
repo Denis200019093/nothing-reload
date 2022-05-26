@@ -19,7 +19,6 @@ public class PostDto {
     private Rate rate;
     private Date createdDate;
 
-
     public PostDto(Post post) {
         id = post.getId();
         title = post.getTitle();

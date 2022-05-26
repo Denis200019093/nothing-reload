@@ -2,6 +2,7 @@ package com.nukem.nothingreloaded.controller;
 
 import com.nukem.nothingreloaded.entity.User;
 import com.nukem.nothingreloaded.entity.dto.UserDto;
+import com.nukem.nothingreloaded.repository.UserRepo;
 import com.nukem.nothingreloaded.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -16,11 +17,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
     private final UserService userService;
+    private final UserRepo userRepo;
 
     @GetMapping("/subscribe/{user}")
     public ResponseEntity<?> subscribe(
             @AuthenticationPrincipal User currentUser,
-            @PathVariable User user
+            @PathVariable(required = false) User user
     ) {
         userService.subscribe(currentUser, user);
 
@@ -37,9 +39,16 @@ public class UserController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-
     @GetMapping("/userinfo")
-    public ResponseEntity<UserDto> userInfo(@AuthenticationPrincipal User user) {
+    public ResponseEntity<UserDto> userInfo(@AuthenticationPrincipal User u) {
+        User user = userRepo.findByUsername(u.getUsername()).orElse(null);
         return ResponseEntity.ok(UserDto.convertUserToDto(user));
+    }
+
+    @GetMapping("/user/{id}")
+    public ResponseEntity<UserDto> getUser(@AuthenticationPrincipal User user, @PathVariable Long id) {
+        UserDto userDto = UserDto.convertUserToDto(userRepo.getById(id));
+        userDto.setCurrentUserSubscribed(user);
+        return ResponseEntity.ok(userDto);
     }
 }

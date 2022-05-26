@@ -5,6 +5,7 @@ import com.nukem.nothingreloaded.entity.Post;
 import com.nukem.nothingreloaded.entity.User;
 import com.nukem.nothingreloaded.entity.dto.CommentDto;
 import com.nukem.nothingreloaded.entity.dto.PostDto;
+import com.nukem.nothingreloaded.entity.dto.UserDto;
 import com.nukem.nothingreloaded.repository.UserRepo;
 import com.nukem.nothingreloaded.service.CommentService;
 import com.nukem.nothingreloaded.service.PostService;
