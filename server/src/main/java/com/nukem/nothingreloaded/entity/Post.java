@@ -3,6 +3,7 @@ package com.nukem.nothingreloaded.entity;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -21,6 +22,8 @@ public class Post {
     @Lob
     @NotBlank(message = "Please fill the message")
     private String content;
+    @CreatedDate
+    private Date createdDate = new Date();
 
     @ManyToOne
     @JoinColumn(name = "author_id")
