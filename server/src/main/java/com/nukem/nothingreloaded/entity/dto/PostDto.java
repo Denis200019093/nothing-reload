@@ -4,6 +4,7 @@ import com.nukem.nothingreloaded.entity.Post;
 import com.nukem.nothingreloaded.entity.User;
 import lombok.Data;
 
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,6 +17,7 @@ public class PostDto {
     private UserDto author;
     private List<CommentDto> comments;
     private Rate rate;
+    private Date createdDate;
 
 
     public PostDto(Post post) {
@@ -24,6 +26,7 @@ public class PostDto {
         content = post.getContent();
         author = new UserDto(post.getAuthor());
         rate = new Rate(post.getLikesCount(), post.getDislikesCount());
+        createdDate = post.getCreatedDate();
     }
 
     public static PostDto convertPostToDto(Post post, User user) {

@@ -49,8 +49,4 @@ public class AuthController {
         }
     }
 
-    @GetMapping("/userinfo")
-    public ResponseEntity<UserDto> userInfo(@AuthenticationPrincipal User user) {
-        return ResponseEntity.ok(new UserDto(user));
-    }
 }
