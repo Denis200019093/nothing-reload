@@ -8,12 +8,13 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Data
-@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonInclude(JsonInclude.Include.NON_DEFAULT)
 public class UserDto {
     private Long id;
     private String username;
     private Set<Long> subscriptions;
     private Set<Long> subscribers;
+    private boolean isCurrentUserSubscribed;
 
     public UserDto(User user) {
         id = user.getId();
@@ -25,5 +26,9 @@ public class UserDto {
         userDto.setSubscribers(user.getSubscribers().stream().map(User::getId).collect(Collectors.toSet()));
         userDto.setSubscriptions(user.getSubscriptions().stream().map(User::getId).collect(Collectors.toSet()));
         return userDto;
+    }
+
+    public void setCurrentUserSubscribed(User currentUser) {
+        if(subscribers.contains(currentUser.getId())) isCurrentUserSubscribed = true;
     }
 }
