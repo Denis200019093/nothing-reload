@@ -74,25 +74,25 @@ public class PostController {
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 
-    @PostMapping("/{comment}/like")
-    public ResponseEntity<?> likePost(@AuthenticationPrincipal User user,
-                                      @PathVariable(required = false) Comment comment) {
-        if (user == null) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        if (comment == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        comment.addLike(user);
-        commentService.saveComment(comment);
-        return new ResponseEntity<>(HttpStatus.ACCEPTED);
-    }
-
-    @PostMapping("/{comment}/dislike")
-    public ResponseEntity<?> dislikePost(@AuthenticationPrincipal User user,
-                                         @PathVariable(required = false) Comment comment) {
-        if (user == null) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        if (comment == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        comment.addDislike(user);
-        commentService.saveComment(comment);
-        return new ResponseEntity<>(HttpStatus.ACCEPTED);
-    }
+//    @PostMapping("/{comment}/like")
+//    public ResponseEntity<?> likePost(@AuthenticationPrincipal User user,
+//                                      @PathVariable(required = false) Comment comment) {
+//        if (user == null) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+//        if (comment == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+//        comment.addLike(user);
+//        commentService.saveComment(comment);
+//        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+//    }
+//
+//    @PostMapping("/{comment}/dislike")
+//    public ResponseEntity<?> dislikePost(@AuthenticationPrincipal User user,
+//                                         @PathVariable(required = false) Comment comment) {
+//        if (user == null) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+//        if (comment == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+//        comment.addDislike(user);
+//        commentService.saveComment(comment);
+//        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+//    }
 
     @PostMapping("/{post}/comment")
     public ResponseEntity<CommentDto> addComment(@AuthenticationPrincipal User user,
