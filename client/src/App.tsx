@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { Routes, Route, BrowserRouter as Router  } from 'react-router-dom'
-import { Container, ThemeProvider, createTheme, Grid } from '@mui/material';
+import { Container, ThemeProvider, createTheme, Grid, Box } from '@mui/material';
 
 import Header from './components/Header';
 import LeftBar from './components/LeftBar';
@@ -10,6 +10,7 @@ import { Provider } from 'react-redux';
 
 import { setupStore } from './redux/store'
 import ErrorMessage from './components/ErrorMessage';
+import Auth from './components/Auth';
 
 const store = setupStore()
 
@@ -25,13 +26,13 @@ export const theme = createTheme( {
 });
 
 const App: FC = () => {
-  return (
+  	return (
 		<Provider store={store}>
 			<ThemeProvider theme={theme}>
 				<Router>
 					<Container maxWidth='xl'>
-						<Header/>
 						<Grid container>
+							<Header/>
 							<Grid item md={2.5}>
 								<LeftBar/>
 							</Grid>
@@ -43,10 +44,13 @@ const App: FC = () => {
 								</Routes>
 							</Grid>
 							<Grid item md={3}>
-								<Comments/>
+								<Box></Box>
+								{/* <Comments/> */}
 							</Grid>
+							<ErrorMessage/>
+						<Auth/>
 						</Grid>
-						<ErrorMessage/>
+						
 					</Container>
 				</Router>
 			</ThemeProvider>

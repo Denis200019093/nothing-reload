@@ -3,26 +3,22 @@ export interface IComment {
     text: string;
 }
 
+interface IRate {
+    rating?: number;
+    userDisliked?: boolean;
+    userLiked?: boolean;
+}
+
+interface IAuthor {
+    id: string;
+    username: string;
+}
+
 export interface IPost {
     id?: string;
     title: string;
     content: string;
     comments?: IComment[];
-    likes?: number;
-    dislikes?: number;
-    userDisliked?: boolean;
-    userLiked?: boolean;
+    rate?: IRate
+    author?: IAuthor
 }
-// interface IComment {
-//     id: string;
-//     value: string;
-//     username: string
-// }
-
-// export interface IPost {
-//     id: string;
-//     title: string;
-//     description: string;
-//     likes: 0,
-//     comments: IComment[],
-// }

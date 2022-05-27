@@ -16,7 +16,7 @@ import { IPost } from './../models/IPost';
 import { IUser } from '../models/IUser';
 import { styled, alpha } from '@mui/material/styles';
 import { likeAsync, dislikeAsync } from '../redux/reducers/posts';
-import { useAppDispatch, } from '../hooks/useTypedSelector';
+import { useAppDispatch, useTypedSelector, } from '../hooks/useTypedSelector';
 
 
 export const CardActionsItem = styled(Box)(({ theme }) => ({
@@ -54,6 +54,7 @@ interface IProps {
 const PostItem: FC<IProps> = ({ item }) => {
     
     const dispatch = useAppDispatch()
+    const { authUser } = useTypedSelector(state => state.auth)
     const [ anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
     const open = Boolean(anchorEl);
@@ -65,16 +66,15 @@ const PostItem: FC<IProps> = ({ item }) => {
     const handleClose = () => {
         setAnchorEl(null);
     };
-    console.log(item);
-    console.log(item.userLiked);
-    console.log(item.userDisliked);
 
     return (
         <Card sx={{ mb: 4, mt: 2 }}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', p: 2, pb: 0 }}>
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
                     <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
-                    <Typography sx={{ ml: 1 }} variant="h5" component="div">Username</Typography>
+                    <Link to={`/user/${item.author.id}`}>
+                        <Typography sx={{ ml: 1 }} variant="h5" component="div">{item.author.username}</Typography>
+                    </Link>
                 </Box>
                 
                 <Box>
@@ -116,27 +116,29 @@ const PostItem: FC<IProps> = ({ item }) => {
             <CardActions sx={{ p: 2 }}>
                 <Box sx={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <Box sx={{ display: 'flex' }}>
-                        <CardActionsItem>
-                            <ChatBubbleOutlineIcon/>
-                            <Typography variant="body2">{item.comments?.length}</Typography>
-                        </CardActionsItem>
+                            <Link to={`/posts/${item.id}`}>
+                                <CardActionsItem>
+                                    <ChatBubbleOutlineIcon/>
+                                    <Typography variant="body2">{item.comments?.length}</Typography>
+                                </CardActionsItem>
+                            </Link>
                         <CardActionsItem>
                             <BookmarkBorderIcon/>
                         </CardActionsItem>
                     </Box>
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
                         <Arrows 
-                            sx={{ color: item.userLiked ? '#00C9A7' : '' }} 
+                            sx={{ color: item.rate.userLiked ? '#00C9A7' : '' }} 
                             onClick={() => {
                                 dispatch(likeAsync(item.id))
                             }}>
                             <KeyboardArrowUpIcon />
                         </Arrows>
                     
-                        <Typography sx={{ pl: 1, pr: 1 }}>{item.likes - item.dislikes}</Typography>
+                        <Typography sx={{ pl: 1, pr: 1 }}>{item.rate.rating}</Typography>
 
                         <Arrows 
-                            sx={{ color: item.userDisliked ? 'red' : '' }}  
+                            sx={{ color: item.rate.userDisliked ? 'red' : '' }}  
                             onClick={() => dispatch(dislikeAsync(item.id))}>
                             <KeyboardArrowDownIcon/>
                         </Arrows>

@@ -1,10 +1,11 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, Suspense } from 'react'
 import { Box } from '@mui/material'
 
 import { useAppDispatch, useTypedSelector } from '../hooks/useTypedSelector';
 import { getPosts } from '../redux/reducers/posts';
-import PostItem from './PostItem';
 import { IPost } from '../models/IPost';
+import SkeletonLoading from './Skeleton';
+const PostItem = React.lazy(() => import('./PostItem'));
 
 const Posts = () => {
 
@@ -18,10 +19,11 @@ const Posts = () => {
     return (
         <Box>            
             {posts && posts.map((item: IPost, index: number) => (
-                <PostItem
-                    key={index}
-                    item={item}
-                />
+                <Suspense key={index} fallback={<SkeletonLoading/>}>
+                    <PostItem
+                        item={item}
+                    />
+                </Suspense>
             ))}
         </Box>
     )

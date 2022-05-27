@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, Suspense } from 'react'
 import { useParams } from 'react-router-dom';
 
 import { Box, Typography, Avatar, TextareaAutosize, Button } from '@mui/material';
@@ -16,6 +16,9 @@ import { CardActionsItem, Arrows } from '../components/PostItem'
 import CommentItem from '../components/CommentItem';
 import { IComment } from '../models/IPost';
 import { likeAsync, dislikeAsync } from '../redux/reducers/posts'
+import Spinner from '../components/Spinner';
+const Comments = React.lazy(() => import('../components/Comments'));
+
 
 const CommentsBlock = styled(Box)(({ theme }) => ({
 	display: 'flex',
@@ -76,7 +79,6 @@ const PostDetails = () => {
     useEffect(() => {
         dispatch(getPostDetails(id))
     }, [dispatch, id])
-    console.log(postDetails);
     
     return (
         <Box sx={{ pl: 3, pr: 3 }}>
@@ -85,8 +87,8 @@ const PostDetails = () => {
                     <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
                     <Typography sx={{ ml: 1 }}>Nothing</Typography>
                 </Box>
-                <Typography sx={{ p: '15px 0' }} variant='h4'>{postDetails.title}</Typography>
-                <Typography variant='body2'>{postDetails.content}</Typography>
+                <Typography sx={{ p: '15px 0' }} variant='h4'>{postDetails?.title}</Typography>
+                <Typography variant='body2'>{postDetails?.content}</Typography>
                 <FlexBlocks sx={{ mt: 2 }}>
                     <Box sx={{ display: 'flex' }}>
                         <CardActionsItem sx={{ pl :0 }}>
@@ -101,7 +103,7 @@ const PostDetails = () => {
                         <Arrows onClick={() => dispatch(likeAsync(postDetails.id))}>
                             <KeyboardArrowUpIcon/>
                         </Arrows>
-                        <Typography sx={{ pl: 1, pr: 1 }}>{postDetails.likes - postDetails.dislikes}</Typography>
+                        <Typography sx={{ pl: 1, pr: 1 }}>{postDetails?.rate?.rating}</Typography>
                         <Arrows onClick={() => dispatch(dislikeAsync(postDetails.id))}>
                             <KeyboardArrowDownIcon/>
                         </Arrows>
@@ -111,7 +113,7 @@ const PostDetails = () => {
             <CommentsBlock>
                 <FlexBlocks>
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                        <Typography variant='h5'>21</Typography>
+                        <Typography variant='h5'>{postDetails.comments?.length}</Typography>
                         <Typography sx={{ ml: 1 }} variant='h5'>comments</Typography>
                     </Box>
                     <SortIcon/>
@@ -135,7 +137,10 @@ const PostDetails = () => {
                         <ActiveBlock onClick={() => setActive(true)}>Comment text...</ActiveBlock>
                     }
                 </Box>
-                <Box>
+                <Suspense fallback={<Spinner/>}>
+                    <Comments comments={postDetails.comments}/>
+                </Suspense>
+                {/* <Box>
                     {postDetails.comments && 
                      postDetails.comments.map((comm: IComment, index: number) => (
                         <CommentItem
@@ -143,7 +148,7 @@ const PostDetails = () => {
                             comment={comm}
                         />
                     ))}
-                </Box>
+                </Box> */}
             </CommentsBlock>
         </Box>
     )

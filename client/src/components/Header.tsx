@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import { styled, alpha } from '@mui/material/styles';
-import { Box, AppBar, TextField, Button, InputBase, Avatar, Grid, Typography } from '@mui/material';
+import { Box, AppBar, Button, InputBase, Avatar, Grid, Menu, MenuItem } from '@mui/material';
+import LoginIcon from '@mui/icons-material/Login';
+import LogoutIcon from '@mui/icons-material/Logout';
 
 import { useAppDispatch, useTypedSelector } from '../hooks/useTypedSelector';
-import AppleIcon from '@mui/icons-material/Apple';
-import DensityMediumIcon from '@mui/icons-material/DensityMedium';
-
 import logo from '../assets/third.png'
 import { Link } from 'react-router-dom';
-import { getUserInfoAsync, logOut } from '../redux/reducers/auth';
+import { getUserInfoAsync, logOut, openModal } from '../redux/reducers/auth';
 
 const Search = styled('div')(({ theme }) => ({
     position: 'relative',
@@ -44,7 +43,6 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 const HeaderBlock = styled(Grid)(() => ({
-    
     minHeight: '60px',
     padding: '5px 15px',
 }));
@@ -70,17 +68,14 @@ const Logo = styled('img')(() => ({
 const Header = () => {
 
     const dispatch = useAppDispatch()
-    const { authUser } = useTypedSelector(state => state.auth)
-    const [ activeInput, setActive ] = useState<boolean>(false)
+    const { isAuth, authUser } = useTypedSelector(state => state.auth)
 
     useEffect(() => {
         dispatch(getUserInfoAsync())
     }, [dispatch])
 
-    console.log(authUser);
-    
     return (
-        <AppBar sx={{ mb: 1 }} position="static">
+        <AppBar position="static">
             <HeaderBlock container>
                 <HeaderSide item md={2.5}>
                     <Link to='/'>
@@ -108,18 +103,21 @@ const Header = () => {
                     >Create</Button>
                 </HeaderCenter>
                 <HeaderSide sx={{ justifyContent: 'end' }} item md={3}>
-                    <Typography 
-                        variant='h4' 
-                        sx={{ p: '0 10px' }}>
-                            {(authUser.username?.slice(0,1).toUpperCase()) || 
-                            <Typography>User is gone</Typography>
-                        }</Typography>
-                        <>
-                            {authUser ? <Button onClick={() => dispatch(logOut())} variant='contained'>Log out</Button> : null}
-                        </>
+                    <>
+                        {isAuth ?
+                            <Box sx={{ display: 'flex', alignItems: 'center', position: 'relative' }}>
+                                <Box>{authUser.username}</Box>
+                                <LogoutIcon sx={{ cursor: 'pointer' }} onClick={() => dispatch(logOut())}/>
+                            </Box>
+                            : 
+                            <LoginIcon sx={{ cursor: 'pointer' }} onClick={() => dispatch(openModal())}/>
+                        }
+                    </>
+                    
                 </HeaderSide>
                 
             </HeaderBlock>
+            
         </AppBar>
     )
 }
