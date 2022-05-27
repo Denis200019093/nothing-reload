@@ -68,7 +68,7 @@ const Logo = styled('img')(() => ({
 const Header = () => {
 
     const dispatch = useAppDispatch()
-    const { isAuth } = useTypedSelector(state => state.auth)
+    const { isAuth, authUser } = useTypedSelector(state => state.auth)
 
     useEffect(() => {
         dispatch(getUserInfoAsync())
@@ -106,7 +106,7 @@ const Header = () => {
                     <>
                         {isAuth ?
                             <Box sx={{ display: 'flex', alignItems: 'center', position: 'relative' }}>
-                                <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
+                                <Box>{authUser.username}</Box>
                                 <LogoutIcon sx={{ cursor: 'pointer' }} onClick={() => dispatch(logOut())}/>
                             </Box>
                             : 

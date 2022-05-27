@@ -16,7 +16,7 @@ import { IPost } from './../models/IPost';
 import { IUser } from '../models/IUser';
 import { styled, alpha } from '@mui/material/styles';
 import { likeAsync, dislikeAsync } from '../redux/reducers/posts';
-import { useAppDispatch, } from '../hooks/useTypedSelector';
+import { useAppDispatch, useTypedSelector, } from '../hooks/useTypedSelector';
 
 
 export const CardActionsItem = styled(Box)(({ theme }) => ({
@@ -54,6 +54,7 @@ interface IProps {
 const PostItem: FC<IProps> = ({ item }) => {
     
     const dispatch = useAppDispatch()
+    const { authUser } = useTypedSelector(state => state.auth)
     const [ anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
     const open = Boolean(anchorEl);
@@ -71,7 +72,9 @@ const PostItem: FC<IProps> = ({ item }) => {
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', p: 2, pb: 0 }}>
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
                     <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
-                    <Typography sx={{ ml: 1 }} variant="h5" component="div">Username</Typography>
+                    <Link to={`/user/${item.author.id}`}>
+                        <Typography sx={{ ml: 1 }} variant="h5" component="div">{item.author.username}</Typography>
+                    </Link>
                 </Box>
                 
                 <Box>

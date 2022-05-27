@@ -4,11 +4,7 @@ import Cookies from 'js-cookie'
 import { $api } from '../../http'
 import { IUser } from '../../models/IUser';
 import ApiError from '../../exceptions/api-error'
-
-export interface AuthResponse {
-    token: string;
-    user: IUser
-}
+import { IProfile } from '../../interfaces/auth-interfaces';
 
 const token = Cookies.get('user')
 
@@ -16,12 +12,13 @@ export const loginAsync = createAsyncThunk(
     'auth/loginAsync',
     async (user: IUser, { rejectWithValue, dispatch }) => {
         try {
-            const { data } = await $api.post<AuthResponse>('/login', user)        
+            const { data } = await $api.post('/login', user)
+
             dispatch(login(user))
             
             Cookies.set('user', data.token, { expires: 7 })
             localStorage.setItem('token', data.token)
-        } catch (error) {
+        } catch (error: any) {
             return rejectWithValue(error)
         }
         
@@ -53,7 +50,7 @@ export const getUserInfoAsync = createAsyncThunk(
             const { data } = await $api.get('/userinfo')        
             dispatch(setUserInfo(data))
         } catch (error) {
-            rejectWithValue(error)
+            return rejectWithValue(error)
         }
         
     }
@@ -75,21 +72,43 @@ export const getProfileUser = createAsyncThunk(
             const { data } = await $api.get(`/user/${id}`)        
             dispatch(setProfileUser(data))
         } catch (error) {
-            rejectWithValue(error)
+            return rejectWithValue(error)
         }
         
     }
 )
 
-interface IProfile {
-    username: string
-}
+export const subscribe = createAsyncThunk(
+    'user/subscribe',
+    async (id: string, { rejectWithValue, dispatch }) => {
+        try {
+            await $api.get(`/subscribe/${id}`)
+            dispatch(setSubscribe())        
+        } catch (error) {
+            return rejectWithValue(error)
+        }
+        
+    }
+)
+
+export const unsubscribe = createAsyncThunk(
+    'user/unsubscribe',
+    async (id: string, { rejectWithValue, dispatch }) => {
+        try {
+            await $api.get(`/unsubscribe/${id}`)
+            dispatch(setUnsubscribe())        
+        } catch (error) {
+            return rejectWithValue(error)
+        }
+    }
+)
   
 const initialState = {
     authUser: {} as IUser | any,
     userProfile: {} as IProfile,
     openModal: false as boolean,
-    isAuth: false as boolean
+    isAuth: false as boolean,
+    errorMessage: '' as string
 }
 
 const authSlice = createSlice({
@@ -120,6 +139,15 @@ const authSlice = createSlice({
         },
         setProfileUser(state, action: PayloadAction<IProfile>) {
             state.userProfile = action.payload
+        },
+        setSubscribe(state) {
+            state.userProfile.currentUserSubscribed = true
+        },
+        setUnsubscribe(state) {
+            state.userProfile.currentUserSubscribed = false
+        },
+        setErrorMessage(state, action: PayloadAction<string>) {
+            state.errorMessage = action.payload
         }
     }
 });
@@ -131,6 +159,9 @@ export const {
     setLogOut, 
     openModal,
     closeModal,
-    setProfileUser
+    setProfileUser,
+    setSubscribe,
+    setUnsubscribe,
+    setErrorMessage
 } = authSlice.actions;
 export default authSlice.reducer

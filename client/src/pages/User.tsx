@@ -1,6 +1,10 @@
-import React from 'react'
+import React, { useEffect } from 'react'
+import { useParams } from 'react-router-dom';
+
 import { Box, Typography, Button } from '@mui/material'
 import { styled, alpha } from '@mui/material/styles';
+import { useAppDispatch, useTypedSelector } from '../hooks/useTypedSelector';
+import { getProfileUser, subscribe, unsubscribe } from '../redux/reducers/auth';
 
 const WrapperInfoBlock = styled(Box)(({ theme }) => ({
 	display: 'flex',
@@ -36,7 +40,7 @@ const BtnFollow = styled(Button)(() => ({
 
 const UserAvatar = styled('img')(() => ({
 	position: 'absolute',
-    bottom: '-15px',
+    bottom: '10px',
     left: '15px',
     width: '100px',
     height: '100px',
@@ -58,18 +62,29 @@ const Actions = styled(Box)(() => ({
 }));
 
 const User = () => {
+
+    const dispatch = useAppDispatch()
+    const { userProfile } = useTypedSelector(state => state.auth)
+    const { id } = useParams()
+
+    
+    useEffect(() => {
+        dispatch(getProfileUser(id))
+    }, [dispatch, id])
+    
+    console.log(userProfile);
     return (
         <Box>
             <WrapperInfoBlock>
                 <Background>
 
-                <UserAvatar src='https://i.pinimg.com/originals/be/6a/dc/be6adc8f98a4650049d6ee94f9c1a621.jpg' alt='alt'/>
+                    <UserAvatar src='https://i.pinimg.com/originals/be/6a/dc/be6adc8f98a4650049d6ee94f9c1a621.jpg' alt='alt'/>
                 </Background>
                 <UserInfoBlock>
-                    <Typography sx={{ fontWeight: 700 }} variant='h4'>Интернет</Typography>
+                    <Typography sx={{ fontWeight: 700 }} variant='h4'>{userProfile.username}</Typography>
                     <Typography variant='body2'>Тренды интернета, истории из соцсетей, погружение в цифровую культуру и объяснения мемов.</Typography>
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                        <Typography variant='body2'>323</Typography>
+                        <Typography sx={{ mr: 1 }} variant='body2'>{userProfile.subscribers?.length || 0}</Typography>
                         <Typography variant='body2'>Подписчиков</Typography>
                     </Box>
                     <Box>
@@ -77,7 +92,13 @@ const User = () => {
                         <Button variant="text">Комментарии</Button>
                         <Button variant="text">Подробнее</Button>
                     </Box>
-                    <BtnFollow variant='contained'>Подписаться</BtnFollow>
+                    <Box>
+                        {userProfile.currentUserSubscribed ?
+                            <BtnFollow onClick={() => dispatch(unsubscribe(id))} variant='contained'>Отписаться</BtnFollow>
+                            :
+                            <BtnFollow onClick={() => dispatch(subscribe(id))} variant='contained'>Подписаться</BtnFollow>
+                        }
+                    </Box>
                 </UserInfoBlock>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 1.5 }}>
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>

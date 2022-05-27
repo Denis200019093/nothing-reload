@@ -1,10 +1,12 @@
-import React, { useState, ChangeEvent } from 'react'
+import React, { useState } from 'react'
 import { 
     Button, Box, TextField,
     Dialog, DialogTitle,
     DialogContent, DialogActions,
-    Switch 
+    Switch, Typography
 } from '@mui/material';
+import { useNavigate } from "react-router-dom";
+import { SubmitHandler, useForm, Controller } from 'react-hook-form'
 import { styled, alpha } from '@mui/material/styles';
 
 import { useAppDispatch, useTypedSelector } from '../hooks/useTypedSelector';
@@ -54,32 +56,40 @@ interface IValues {
     email: string;
     password: string;
     passwordConfirm: string;
-}
-
-const initialValues = {
-    username: '',
-    email: '',
-    password: '',
-    passwordConfirm: '',
+    name: string;
 }
 
 const Auth = () => {
 
     const dispatch = useAppDispatch()
-    const { openModal } = useTypedSelector(state => state.auth)
+    const navigate = useNavigate()
+    const { openModal, errorMessage } = useTypedSelector(state => state.auth)
 
     const [ logimForm, setLoginForm ] = useState<boolean>(true);
-    const [ values, setValues ] = useState<IValues>(initialValues);
-    const { username, password } = values
 
-    const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
+    const {
+		register,
+		handleSubmit,
+		formState: { errors },
+		reset
+	} = useForm<IValues>({
+		mode: 'onChange',
+	})
 
-        setValues({
-            ...values,
-            [name]: value,
-        });
+    const submit: SubmitHandler<IValues> = data => {
+        const { username, email, password, passwordConfirm } = data
+        
+        if ( logimForm ) {
+            dispatch(loginAsync({ username, password }))
+        } else {
+            dispatch(registrationAsync({ username, email, password, passwordConfirm }))
+        }
+        dispatch(closeModal())
+        reset()
+
+        return navigate('/')
     };
+    console.log(errorMessage);
     
     return (
         <Box>
@@ -100,70 +110,80 @@ const Auth = () => {
                                 <Switch 
                                     color="default"
                                     value={logimForm}
-                                    onChange={() => setLoginForm(prev => prev = !logimForm)}
+                                    onChange={() => {
+                                        setLoginForm(prev => prev = !logimForm)
+                                        reset()
+                                    }}
                                 />
                             </DialogHeader>
                         </DialogTitle>
                         
                         <ModalContent>
-                            <TextField
-                                name='username'
-                                label='Username'
-                                placeholder='Username'
-                                variant='outlined'
-                                fullWidth
-                                value={values.username}
-                                onChange={handleInputChange}
-                            />
-                            {logimForm ? null :
+                            <Typography sx={{ color: 'red' }} variant='body2'>{errorMessage}</Typography>
+                            <form onSubmit={handleSubmit(submit)}>
                                 <TextField
-                                    name='email'
-                                    label='Email'
-                                    placeholder='Email'
-                                    variant='outlined'
-                                    fullWidth
-                                    value={values.email}
-                                    onChange={handleInputChange}
+                                    {...register('username', {
+                                        required: 'Username is required'
+                                    })}
+                                    placeholder='Username'
+                                    variant="outlined"				
                                 />
-                            }
-                            
-                            <TextField
-                                name='password'
-                                label='Password'
-                                placeholder='password'
-                                type='Password'
-                                variant='outlined'
-                                fullWidth
-                                value={values.password}
-                                onChange={handleInputChange}
-                            />
-                            {logimForm ? null :
-                                <TextField
-                                    name='passwordconfirm'
-                                    label='Password Confirm'
-                                    placeholder='Password Confirm'
-                                    type='password'
-                                    variant='outlined'
-                                    fullWidth
-                                    value={values.passwordConfirm}
-                                    onChange={handleInputChange}
-                                />
-                            }
-                        </ModalContent>
-                        <DialogActions>
-                            {logimForm ?
-                                <Button 
-                                    variant='contained' 
-                                    onClick={() => dispatch(loginAsync({ username, password }))}>Log in</Button
-                                >
-                            :
-                                <Button 
-                                    variant='contained' 
-                                    onClick={() => dispatch(registrationAsync(values))}>Sign up</Button
-                                >
-                            }
-                        </DialogActions>
+                                {errors?.username && (
+                                    <div style={{ color: 'red' }}>{errors?.username?.message}</div>
+                                )}
+                                {!logimForm ? 
+                                    <Box>
+                                        <TextField
+                                            {...register('email', {
+                                                required: 'Email is required',
+                                                pattern: {
+                                                    value:
+                                                        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+                                                    message: 'Please enter valid email!',
+                                                },
+                                            })}
+                                            placeholder='Email'
+                                            type='email'
+                                            variant="outlined"				
+                                        />
+                                        {errors?.email && (
+                                            <div style={{ color: 'red' }}>{errors?.email?.message}</div>
+                                        )} 
+                                    </Box>
+                                : null} 
+                                
 
+                                <TextField
+                                    {...register('password', {
+                                        required: 'Password is required'
+                                    })}
+                                    placeholder='Password'
+                                    type='password'
+                                    variant="outlined"				
+                                />
+                                {errors?.password && (
+                                    <div style={{ color: 'red' }}>{errors?.password?.message}</div>
+                                )}
+
+                                {!logimForm ? 
+                                    <Box>
+                                        <TextField
+                                            {...register('passwordConfirm', {
+                                                required: 'Confirm is required'
+                                            })}
+                                            placeholder='Password Confirm'
+                                            type='password'
+                                            variant="outlined"				
+                                        />
+                                        {errors?.passwordConfirm && (
+                                            <div style={{ color: 'red' }}>{errors?.passwordConfirm?.message}</div>
+                                        )} 
+                                    </Box>    
+                                : null}                              
+                                
+                                <Button variant='contained' type='submit'>Submit</Button>
+                            </form>
+                        </ModalContent>
                     </ModalAuthBlock>
                 </Box>
             </Dialog>

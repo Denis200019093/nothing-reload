@@ -1,10 +1,8 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
-import Cookies from 'js-cookie'
-
 import { $api } from '../../http'
 import { IPost, IComment } from '../../models/IPost'
-import { AuthResponse } from './auth';
 import ApiError from '../../exceptions/api-error'
+import { PostsState } from '../../interfaces/posts-interfaces';
 
 const token = localStorage.getItem('token')
 
@@ -60,15 +58,12 @@ export const createCommentAsync = createAsyncThunk(
 export const likeAsync = createAsyncThunk(
     'posts/likeAsync',
     async (id: string, { rejectWithValue, dispatch }) => { 
-        
         try {
-            
             if ( !token ) {
                 dispatch(setError(true))
                 dispatch(setErrorMessage('Авторизуйтесь'))
                 throw ApiError.UnauthorizedError()
             }
-
             await $api.post(`/posts/${id}/like`, id)       
             dispatch(likePost(id))
         } catch (err) {
@@ -87,7 +82,6 @@ export const dislikeAsync = createAsyncThunk(
                 dispatch(setErrorMessage('Авторизуйтесь'))
                 throw ApiError.UnauthorizedError()
             }
-    
             await $api.post(`/posts/${id}/dislike`, id)
             dispatch(dislikePost(id))
         } catch (error) {
@@ -96,19 +90,12 @@ export const dislikeAsync = createAsyncThunk(
         
     }
 )
-
-interface PostsState {
-    posts: IPost[];
-    postDetails: IPost;
-    errorMessage: string;
-    error: boolean
-}
   
-const initialState: PostsState = {
-    posts: [],
+const initialState = {
+    posts: [] as IPost[],
     postDetails: {} as IPost,
-    errorMessage: '',
-    error: false
+    errorMessage: '' as string,
+    error: false as boolean
 }
 
 const postsSlice = createSlice({
