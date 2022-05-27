@@ -67,9 +67,10 @@ export const likeAsync = createAsyncThunk(
                 throw ApiError.UnauthorizedError()
             }
             const { data } = await $api.post(`/posts/${id}/like`, id)
+            console.log(id);
             console.log(data);
-                   
-            return data
+            
+            return id
         } catch (err) {
             return rejectWithValue('Не удалось лайкнуть пост')
         }
