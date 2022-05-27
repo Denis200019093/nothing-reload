@@ -10,7 +10,7 @@ const PostItem = React.lazy(() => import('./PostItem'));
 const Posts = () => {
 
     const dispatch = useAppDispatch()
-    const { posts } = useTypedSelector(state => state.posts)
+    const { posts, isLoading } = useTypedSelector(state => state.posts)
 
     useEffect(() => {
         dispatch(getPosts())

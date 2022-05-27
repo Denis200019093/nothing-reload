@@ -9,7 +9,6 @@ import { publicRoutes } from './routes';
 import { Provider } from 'react-redux';
 
 import { setupStore } from './redux/store'
-import ErrorMessage from './components/ErrorMessage';
 import Auth from './components/Auth';
 
 const store = setupStore()
@@ -47,10 +46,8 @@ const App: FC = () => {
 								<Box></Box>
 								{/* <Comments/> */}
 							</Grid>
-							<ErrorMessage/>
 						<Auth/>
 						</Grid>
-						
 					</Container>
 				</Router>
 			</ThemeProvider>

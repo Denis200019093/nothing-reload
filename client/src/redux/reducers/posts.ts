@@ -3,71 +3,75 @@ import { $api } from '../../http'
 import { IPost, IComment } from '../../models/IPost'
 import ApiError from '../../exceptions/api-error'
 import { PostsState } from '../../interfaces/posts-interfaces';
+import { AxiosResponse } from 'axios';
 
 const token = localStorage.getItem('token')
 
 export const getPosts = createAsyncThunk(
     'posts/getPosts',
-    async (_, { rejectWithValue, dispatch }) => {
+    async (_, { rejectWithValue }) => {
         try {
             const { data } = await $api.get('/posts')
-            dispatch(setPosts(data))
+            return data
         } catch (error) {
-            rejectWithValue('Не удалось')
+            return rejectWithValue('Не удалось загрузить посты')
         }  
-    }
-)
-
-export const getPostDetails = createAsyncThunk(
-    'posts/getPostDetails',
-    async (id: any, { rejectWithValue, dispatch }) => {
-        const { data } = await $api.get(`/posts/${id}`)
-        console.log(data);
-        
-        dispatch(setPostDetails(data))
     }
 )
 
 export const createPostAsync = createAsyncThunk(
     'posts/createPostAsync',
-    async (post: IPost, { rejectWithValue, dispatch }) => {
-        const { data } = await $api.post('/posts', post)
-        dispatch(createPost(data))
+    async (post: IPost, { rejectWithValue }) => {
+        try {
+            const { data } = await $api.post('/posts', post)
+            return data
+        } catch (error) {
+            return rejectWithValue('Не удалось создать пост')
+        }
     }
 )
+
+export const getPostDetails = createAsyncThunk(
+    'posts/getPostDetails',
+    async (id: string, { rejectWithValue }) => {
+        try {
+            const { data } = await $api.get(`/posts/${id}`)
+            return data
+        } catch (error) {
+            return rejectWithValue('Не удалось получить данные поста')
+        }        
+    }
+)
+
+
 export const createCommentAsync = createAsyncThunk(
     'posts/createCommentAsync',
-    async ({ text, id }: IComment, { rejectWithValue, dispatch }) => {
+    async ({ text, id }: IComment, { rejectWithValue }) => {
         try {
-
             if ( !token ) {
-                dispatch(setError(true))
-                dispatch(setErrorMessage('Авторизуйтесь'))
                 throw ApiError.UnauthorizedError()
             }
-    
             const { data } = await $api.post(`/posts/${id}/comment`, {text})
-            dispatch(createComment(data))
+            return data
         } catch (error) {
-            return rejectWithValue(error)
+            return rejectWithValue('Не удалось создать комментарий')
         }
-       
     }
 )
 
 export const likeAsync = createAsyncThunk(
     'posts/likeAsync',
-    async (id: string, { rejectWithValue, dispatch }) => { 
+    async (id: string, { rejectWithValue }) => { 
         try {
             if ( !token ) {
-                dispatch(setError(true))
-                dispatch(setErrorMessage('Авторизуйтесь'))
                 throw ApiError.UnauthorizedError()
             }
-            await $api.post(`/posts/${id}/like`, id)       
-            dispatch(likePost(id))
+            const { data } = await $api.post(`/posts/${id}/like`, id)
+            console.log(data);
+                   
+            return data
         } catch (err) {
-            rejectWithValue(err)
+            return rejectWithValue('Не удалось лайкнуть пост')
         }
         
     }
@@ -78,14 +82,11 @@ export const dislikeAsync = createAsyncThunk(
     async (id: string, { rejectWithValue, dispatch }) => {
         try {
             if ( !token ) {
-                dispatch(setError(true))
-                dispatch(setErrorMessage('Авторизуйтесь'))
                 throw ApiError.UnauthorizedError()
             }
             await $api.post(`/posts/${id}/dislike`, id)
-            dispatch(dislikePost(id))
         } catch (error) {
-            rejectWithValue(error)
+            return rejectWithValue('Не удалось дизлайкнуть пост')
         }
         
     }
@@ -94,33 +95,72 @@ export const dislikeAsync = createAsyncThunk(
 const initialState = {
     posts: [] as IPost[],
     postDetails: {} as IPost,
+    isLoading: false as boolean,
     errorMessage: '' as string,
-    error: false as boolean
+    error: '' as string
 }
 
 const postsSlice = createSlice({
     name: 'posts',
     initialState,
-    reducers: {
-        setErrorMessage(state, action: PayloadAction<string>) {
-            state.errorMessage = action.payload
+    reducers: {},
+    extraReducers: {
+        // Get all posts
+        [getPosts.fulfilled.type]: (state, action: PayloadAction<IPost[]>) => {
+            state.isLoading = false;
+            state.error = ''
+            state.posts = action.payload;
         },
-        setError(state, action: PayloadAction<boolean>) {
+        [getPosts.pending.type]: (state) => {
+            state.isLoading = true;
+        },
+        [getPosts.rejected.type]: (state,  action: PayloadAction<string>) => {
+            state.isLoading = false;
             state.error = action.payload
         },
-        setPosts(state, action: PayloadAction<IPost[]>) {
-            state.posts = action.payload
+        // Create post
+        [createPostAsync.fulfilled.type]: (state, action: PayloadAction<IPost>) => {
+            state.isLoading = false;
+            state.error = '';
+            state.posts.push(action.payload);
         },
-        setPostDetails(state, action: PayloadAction<IPost>) {
-            state.postDetails = action.payload
+        [createPostAsync.pending.type]: (state) => {
+            state.isLoading = true;
         },
-        createPost(state, action: PayloadAction<IPost>) {
-            state.posts.push(action.payload)
+        [createPostAsync.rejected.type]: (state,  action: PayloadAction<string>) => {
+            state.isLoading = false;
+            state.error = action.payload;
         },
-        createComment(state, action: PayloadAction<IComment>) {
+        // Get data post details
+        [getPostDetails.fulfilled.type]: (state, action: PayloadAction<IPost>) => {
+            state.isLoading = false;
+            state.error = '';
+            state.postDetails = action.payload;
+        },
+        [getPostDetails.pending.type]: (state) => {
+            state.isLoading = true;
+        },
+        [getPostDetails.rejected.type]: (state,  action: PayloadAction<string>) => {
+            state.isLoading = false;
+            state.error = action.payload;
+        },
+        // Create comment to post on page PostDetails
+        [createCommentAsync.fulfilled.type]: (state, action: PayloadAction<IComment>) => {
+            state.isLoading = false;
+            state.error = '';
             state.postDetails.comments?.push(action.payload)
         },
-        likePost(state, action: PayloadAction<string>) { 
+        [createCommentAsync.pending.type]: (state) => {
+            state.isLoading = true;
+        },
+        [createCommentAsync.rejected.type]: (state,  action: PayloadAction<string>) => {
+            state.isLoading = false;
+            state.error = action.payload;
+        },
+        // Liked post
+        [likeAsync.fulfilled.type]: (state, action: PayloadAction<string>) => {
+            state.isLoading = false;
+            state.error = '';
             state.posts = state.posts.map((item) => {
                 const { id, rate } = item
                 const { rating, userDisliked, userLiked } = rate 
@@ -161,7 +201,17 @@ const postsSlice = createSlice({
                 return item
             })
         },
-        dislikePost(state, action: PayloadAction<string>) { 
+        [likeAsync.pending.type]: (state) => {
+            state.isLoading = true;
+        },
+        [likeAsync.rejected.type]: (state,  action: PayloadAction<string>) => {
+            state.isLoading = false;
+            state.error = action.payload;
+        },
+        // Disliked post
+        [dislikeAsync.fulfilled.type]: (state, action: PayloadAction<string>) => {
+            state.isLoading = false;
+            state.error = '';
             state.posts = state.posts.map((item) => {
                 const { id, rate } = item
                 const { rating, userDisliked, userLiked } = rate
@@ -203,17 +253,14 @@ const postsSlice = createSlice({
                 return item
             })
         },
+        [dislikeAsync.pending.type]: (state) => {
+            state.isLoading = true;
+        },
+        [dislikeAsync.rejected.type]: (state,  action: PayloadAction<string>) => {
+            state.isLoading = false;
+            state.error = action.payload;
+        },
     }
 });
 
-export const { 
-    setErrorMessage, 
-    setError, 
-    setPosts, 
-    setPostDetails, 
-    createPost,
-    createComment, 
-    likePost, 
-    dislikePost 
-} = postsSlice.actions;
 export default postsSlice.reducer

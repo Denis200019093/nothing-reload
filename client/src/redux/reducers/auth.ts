@@ -13,7 +13,6 @@ export const loginAsync = createAsyncThunk(
     async (user: IUser, { rejectWithValue, dispatch }) => {
         try {
             const { data } = await $api.post('/login', user)
-
             dispatch(login(user))
             
             Cookies.set('user', data.token, { expires: 7 })
@@ -30,11 +29,10 @@ export const registrationAsync = createAsyncThunk(
     async (user: IUser, { rejectWithValue, dispatch }) => {
         try {
             await $api.post('/registration', user)
-        dispatch(registration(user))
+            dispatch(registration(user))
         } catch (error) {
             return rejectWithValue(error)
         }
-        
     }
 )
 
@@ -58,7 +56,7 @@ export const getUserInfoAsync = createAsyncThunk(
 
 export const logOut = createAsyncThunk(
     'auth/logOut',
-    (_, { rejectWithValue, dispatch }) => {
+    (_, { dispatch }) => {
         dispatch(setLogOut())
         Cookies.remove('user')
         localStorage.removeItem('token')
