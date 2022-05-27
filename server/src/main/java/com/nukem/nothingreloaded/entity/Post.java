@@ -63,10 +63,6 @@ public class Post {
         this.author = author;
     }
 
-    public void addComment(Comment comment) {
-        comments.add(comment);
-    }
-
     public void addLike(User user) {
         if (!likes.contains(user)) likes.add(user);
         else likes.remove(user);
