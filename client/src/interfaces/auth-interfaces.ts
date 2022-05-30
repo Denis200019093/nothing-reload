@@ -6,8 +6,8 @@ export interface AuthResponse {
 }
 
 export interface IProfile {
-    username: string;
-    currentUserSubscribed: boolean;
-    subscribers: number[];
-    subscriptions: number[];
+    username?: string;
+    currentUserSubscribed?: boolean;
+    subscribers?: number[];
+    subscriptions?: number[];
 }

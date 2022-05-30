@@ -5,7 +5,7 @@ import {
 
 import { useAppDispatch } from '../hooks/useTypedSelector';
 import Posts from '../components/Posts';
-import { createPostAsync } from '../redux/reducers/posts';
+import { createPostAsync } from '../redux/actions/postsAction';
 
 const Home: FC = () => {
 

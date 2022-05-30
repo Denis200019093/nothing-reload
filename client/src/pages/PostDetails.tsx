@@ -1,7 +1,7 @@
 import React, { useEffect, useState, Suspense } from 'react'
 import { useParams } from 'react-router-dom';
 
-import { Box, Typography, Avatar, TextareaAutosize, Button } from '@mui/material';
+import { Box, Typography, Avatar, TextareaAutosize, Button, CircularProgress } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import SortIcon from '@mui/icons-material/Sort';
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
@@ -10,12 +10,11 @@ import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
 import { useAppDispatch, useTypedSelector } from '../hooks/useTypedSelector';
-import { getPostDetails, createCommentAsync } from '../redux/reducers/posts';
 
 import { CardActionsItem, Arrows } from '../components/PostItem'
 import CommentItem from '../components/CommentItem';
 import { IComment } from '../models/IPost';
-import { likeAsync, dislikeAsync } from '../redux/reducers/posts'
+import { likeAsync, dislikeAsync, getPostDetails, createCommentAsync } from '../redux/actions/postsAction'
 import Spinner from '../components/Spinner';
 const Comments = React.lazy(() => import('../components/Comments'));
 
@@ -70,7 +69,7 @@ const TextArea = styled(TextareaAutosize)(({ theme }) => ({
 const PostDetails = () => {
 
     const dispatch = useAppDispatch()
-    const { postDetails } = useTypedSelector(state => state.posts)
+    const { postDetails, isLoading } = useTypedSelector(state => state.posts)
     const { id } = useParams()
 
     const [ active, setActive ] = useState<boolean>(false)
@@ -127,7 +126,11 @@ const PostDetails = () => {
                                 onChange={e => setText(e.target.value)}
                             /> 
                             <Button 
-                                onClick={() => dispatch(createCommentAsync({text, id}))} 
+                                onClick={() => {
+                                    dispatch(createCommentAsync({text, id}))
+                                    setText('')
+                                }} 
+                                disabled={!text}
                                 sx={{ mt: 1, color: '#fff' }} 
                                 variant='contained'>
                                 Create
@@ -137,18 +140,10 @@ const PostDetails = () => {
                         <ActiveBlock onClick={() => setActive(true)}>Comment text...</ActiveBlock>
                     }
                 </Box>
+                <Box sx={{ mt: 3, mb: 1 }}>{isLoading ? <Spinner/> : null}</Box>
                 <Suspense fallback={<Spinner/>}>
                     <Comments comments={postDetails.comments}/>
                 </Suspense>
-                {/* <Box>
-                    {postDetails.comments && 
-                     postDetails.comments.map((comm: IComment, index: number) => (
-                        <CommentItem
-                            key={index}
-                            comment={comm}
-                        />
-                    ))}
-                </Box> */}
             </CommentsBlock>
         </Box>
     )

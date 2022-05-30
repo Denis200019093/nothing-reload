@@ -15,7 +15,7 @@ const Comments: FC<IProps> = ({ comments }) => {
                     key={index}
                     comment={item}
                 />
-            ))}
+            )).reverse()}
         </Box>
     )
 }

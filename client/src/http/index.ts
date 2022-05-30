@@ -1,5 +1,4 @@
 import axios from 'axios';
-import ApiError from '../exceptions/api-error';
 export const API_URL = `http://localhost:8080`
 
 export const $api = axios.create({
@@ -23,14 +22,14 @@ $api.interceptors.request.use((config: any) => {
     return config;
 })
 
-$api.interceptors.response.use((config) => {
-    return config;
-}, async (error) => {
+// $api.interceptors.response.use((config) => {
+//     return config;
+// }, async (error) => {
 
-    if (error.response.status === 401) {
-        throw ApiError.UnauthorizedError()
-    }
-    throw error;
-})
+//     if (error.response.status === 401) {
+//         throw ApiError.UnauthorizedError()
+//     }
+//     throw error;
+// })
 
-export default $api;
+// export default $api;

@@ -3,22 +3,23 @@ import { AxiosResponse } from 'axios';
 import Cookies from 'js-cookie'
 import { $api } from '../../http'
 import { IUser } from '../../models/IUser';
-import ApiError from '../../exceptions/api-error'
 import { IProfile } from '../../interfaces/auth-interfaces';
+import { AppDispatch } from '../store';
 
 const token = Cookies.get('user')
 
 export const loginAsync = createAsyncThunk(
     'auth/loginAsync',
-    async (user: IUser, { rejectWithValue, dispatch }) => {
+    async (user: IUser, { rejectWithValue }) => {
         try {
             const { data } = await $api.post('/login', user)
-            dispatch(login(user))
             
             Cookies.set('user', data.token, { expires: 7 })
             localStorage.setItem('token', data.token)
-        } catch (error: any) {
-            return rejectWithValue(error)
+
+            return user
+        } catch (error) {
+            return rejectWithValue('Не удалось залогиниться')
         }
         
     }
@@ -26,42 +27,34 @@ export const loginAsync = createAsyncThunk(
 
 export const registrationAsync = createAsyncThunk(
     'auth/registrationAsync',
-    async (user: IUser, { rejectWithValue, dispatch }) => {
+    async (user: IUser, { rejectWithValue }) => {
         try {
             await $api.post('/registration', user)
-            dispatch(registration(user))
+            return user
         } catch (error) {
-            return rejectWithValue(error)
+            return rejectWithValue('Не удалось')
         }
     }
 )
 
 export const getUserInfoAsync = createAsyncThunk(
-    'auth/checkeUserAsync',
-    async (_, { rejectWithValue, dispatch }) => {
+    'auth/getUserInfoAsync',
+    async (_, { rejectWithValue }) => {
         try {
-
-            if ( !token ) {
-                throw ApiError.UnauthorizedError()
-            }
-
             const { data } = await $api.get('/userinfo')        
-            dispatch(setUserInfo(data))
+            return data
         } catch (error) {
-            return rejectWithValue(error)
+            return rejectWithValue('Не удалось получить информацию о юзере')
         }
         
     }
 )
 
-export const logOut = createAsyncThunk(
-    'auth/logOut',
-    (_, { dispatch }) => {
-        dispatch(setLogOut())
-        Cookies.remove('user')
-        localStorage.removeItem('token')
-    }
-)
+export const logOut = () => (dispatch: AppDispatch) => {
+    dispatch(setLogOut())
+    Cookies.remove('user')
+    localStorage.removeItem('token')
+}
 
 export const getProfileUser = createAsyncThunk(
     'user/getProfileUser',
@@ -70,7 +63,7 @@ export const getProfileUser = createAsyncThunk(
             const { data } = await $api.get(`/user/${id}`)        
             dispatch(setProfileUser(data))
         } catch (error) {
-            return rejectWithValue(error)
+            return rejectWithValue('Невозможно получить профиль юзера')
         }
         
     }
@@ -100,31 +93,29 @@ export const unsubscribe = createAsyncThunk(
         }
     }
 )
+
+interface IState {
+    authUser: IUser
+    userProfile: IProfile
+    openModal: boolean
+    isAuth: boolean
+    isLoading: boolean
+    error: string
+}
   
-const initialState = {
-    authUser: {} as IUser | any,
-    userProfile: {} as IProfile,
-    openModal: false as boolean,
-    isAuth: false as boolean,
-    errorMessage: '' as string
+const initialState: IState = {
+    authUser: {} ,
+    userProfile: {},
+    openModal: false,
+    isAuth: false,
+    isLoading: false,
+    error: ''
 }
 
 const authSlice = createSlice({
     name: 'auth',
     initialState,
     reducers: {
-        login(state, action: PayloadAction<IUser>) {
-            state.authUser = action.payload
-            state.isAuth = true
-        },
-        registration(state, action: PayloadAction<IUser>) {
-            state.authUser = action.payload
-            state.isAuth = true
-        },
-        setUserInfo(state, action: PayloadAction<IUser>) {
-            state.authUser = action.payload
-            state.isAuth = true
-        },
         setLogOut(state) {
             state.authUser = {}
             state.isAuth = false
@@ -144,22 +135,59 @@ const authSlice = createSlice({
         setUnsubscribe(state) {
             state.userProfile.currentUserSubscribed = false
         },
-        setErrorMessage(state, action: PayloadAction<string>) {
-            state.errorMessage = action.payload
-        }
+    },
+    extraReducers: {
+        // Login
+        [loginAsync.fulfilled.type]: (state, action: PayloadAction<IUser>) => {
+            state.isLoading = false;
+            state.error = ''
+            state.isAuth = true
+            state.authUser = action.payload
+        },
+        [loginAsync.pending.type]: (state) => {
+            state.isLoading = true;
+        },
+        [loginAsync.rejected.type]: (state,  action: PayloadAction<string>) => {
+            state.isLoading = false;
+            state.error = action.payload
+        },
+        // Registration
+        [registrationAsync.fulfilled.type]: (state, action: PayloadAction<IUser>) => {
+            state.isLoading = false;
+            state.error = ''
+            state.isAuth = true
+            state.authUser = action.payload
+        },
+        [registrationAsync.pending.type]: (state) => {
+            state.isLoading = true;
+        },
+        [registrationAsync.rejected.type]: (state,  action: PayloadAction<string>) => {
+            state.isLoading = false;
+            state.error = action.payload
+        },
+        // Get user info
+        [getUserInfoAsync.fulfilled.type]: (state, action: PayloadAction<IUser>) => {
+            state.isLoading = false;
+            state.error = ''
+            state.isAuth = true
+            state.authUser = action.payload
+        },
+        [getUserInfoAsync.pending.type]: (state) => {
+            state.isLoading = true;
+        },
+        [getUserInfoAsync.rejected.type]: (state,  action: PayloadAction<string>) => {
+            state.isLoading = false;
+            state.error = action.payload
+        },
     }
 });
 
-export const { 
-    login, 
-    registration, 
-    setUserInfo, 
+export const {  
     setLogOut, 
     openModal,
     closeModal,
     setProfileUser,
     setSubscribe,
-    setUnsubscribe,
-    setErrorMessage
+    setUnsubscribe
 } = authSlice.actions;
 export default authSlice.reducer

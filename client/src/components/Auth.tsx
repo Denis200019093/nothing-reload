@@ -7,7 +7,7 @@ import {
 } from '@mui/material';
 import { useNavigate } from "react-router-dom";
 import { SubmitHandler, useForm, Controller } from 'react-hook-form'
-import { styled, alpha } from '@mui/material/styles';
+import { styled } from '@mui/material/styles';
 
 import { useAppDispatch, useTypedSelector } from '../hooks/useTypedSelector';
 import { closeModal, loginAsync, registrationAsync } from '../redux/reducers/auth';
@@ -63,7 +63,7 @@ const Auth = () => {
 
     const dispatch = useAppDispatch()
     const navigate = useNavigate()
-    const { openModal, errorMessage } = useTypedSelector(state => state.auth)
+    const { openModal } = useTypedSelector(state => state.auth)
 
     const [ logimForm, setLoginForm ] = useState<boolean>(true);
 
@@ -89,7 +89,6 @@ const Auth = () => {
 
         return navigate('/')
     };
-    console.log(errorMessage);
     
     return (
         <Box>
@@ -119,7 +118,6 @@ const Auth = () => {
                         </DialogTitle>
                         
                         <ModalContent>
-                            <Typography sx={{ color: 'red' }} variant='body2'>{errorMessage}</Typography>
                             <form onSubmit={handleSubmit(submit)}>
                                 <TextField
                                     {...register('username', {

@@ -2,7 +2,7 @@ import React, { useEffect, Suspense } from 'react'
 import { Box } from '@mui/material'
 
 import { useAppDispatch, useTypedSelector } from '../hooks/useTypedSelector';
-import { getPosts } from '../redux/reducers/posts';
+import { getPosts } from '../redux/actions/postsAction';
 import { IPost } from '../models/IPost';
 import SkeletonLoading from './Skeleton';
 const PostItem = React.lazy(() => import('./PostItem'));

@@ -1,45 +1,28 @@
-import React, { useState, useEffect } from 'react'
-import { styled, alpha } from '@mui/material/styles';
-import { Box, AppBar, Button, InputBase, Avatar, Grid, Menu, MenuItem } from '@mui/material';
-import LoginIcon from '@mui/icons-material/Login';
-import LogoutIcon from '@mui/icons-material/Logout';
-
-import { useAppDispatch, useTypedSelector } from '../hooks/useTypedSelector';
-import logo from '../assets/third.png'
+import React, { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom';
+import { styled } from '@mui/material/styles';
+import { 
+    Box, AppBar, Button, Grid, 
+    TextField, Typography 
+} from '@mui/material';
+// Icons
+import LoginIcon from '@mui/icons-material/Login';
+import CloseIcon from '@mui/icons-material/Close';
+import LogoutIcon from '@mui/icons-material/Logout';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import logo from '../assets/third.png'
+// My
+import { useAppDispatch, useTypedSelector } from '../hooks/useTypedSelector';
 import { getUserInfoAsync, logOut, openModal } from '../redux/reducers/auth';
+import { useOutside } from '../hooks/useOutside';
 
-const Search = styled('div')(({ theme }) => ({
-    position: 'relative',
-    borderRadius: theme.shape.borderRadius,
-    backgroundColor: alpha(theme.palette.common.white, 0.35),
-    transition: '0.3s',
-    color: '#000',
-    '&:hover': {
-        backgroundColor: '#F1F1F1',
-        boxShadow: '0 0 5px #000'
-    },
-    marginRight: theme.spacing(2),
-    marginLeft: 0,
-    width: '100%',
-    [theme.breakpoints.up('sm')]: {
-        marginLeft: theme.spacing(3),
-        width: 'auto',
-    },
-}));
 
-const StyledInputBase = styled(InputBase)(({ theme }) => ({
-	color: 'inherit',
-	'& .MuiInputBase-input': {
-		padding: theme.spacing(1, 1, 1, 0),
-		// vertical padding + font size from searchIcon
-		paddingLeft: '15px',
-		transition: theme.transitions.create('width'),
-		width: '100%',
-		[theme.breakpoints.up('md')]: {
-		    width: '20ch',
-		},
-	},
+const SearchArea = styled(TextField)(({ theme }) => ({
+    'input': {
+        backgroundColor: '#fff',
+        fontWeight: 700,
+        fontSize: '18px',
+    }
 }));
 
 const HeaderBlock = styled(Grid)(() => ({
@@ -48,7 +31,6 @@ const HeaderBlock = styled(Grid)(() => ({
 }));
 
 const HeaderSide = styled(Grid)(() => ({
-    flexBasis: '25%',
     display: 'flex',
     alignItems: 'center'
 }));
@@ -57,39 +39,77 @@ const HeaderCenter = styled(Grid)(() => ({
     display: 'flex',
     justifyContent: 'flex-start',
     alignItems: 'center',
-    // flexBasis: '50%',
 }));
 
 const Logo = styled('img')(() => ({
-    height: '50px', width: '150px',
+    height: '50px',
+    width: '150px',
     background: 'transparent'
 }));
 
 const Header = () => {
 
     const dispatch = useAppDispatch()
-    const { isAuth, authUser } = useTypedSelector(state => state.auth)
+    const { isAuth, authUser, isLoading } = useTypedSelector(state => state.auth)
+    const { posts } = useTypedSelector(state => state.posts)
+    const { ref, isShow, setIsShow } = useOutside(false)
+
+    const [ searchValue, setSearchValue ] = useState<string>('');
+
+    const filtered = posts.filter(item => item.title.toLowerCase().includes(searchValue.toLowerCase()))
 
     useEffect(() => {
-        dispatch(getUserInfoAsync())
-    }, [dispatch])
-
+        if ( isAuth ) {
+            dispatch(getUserInfoAsync())
+        }
+    }, [dispatch, isAuth])    
+    console.log(authUser);
+    
     return (
-        <AppBar position="static">
+        <AppBar position="static" sx={{ height: '65px' }}>
             <HeaderBlock container>
                 <HeaderSide item md={2.5}>
                     <Link to='/'>
                         <Logo src={logo} alt='logo'/>
                     </Link>
                 </HeaderSide>
-                <HeaderCenter item md={6.5}>
-                    <Search>
-						<StyledInputBase
-							sx={{ width: '325px' }}
-							placeholder="Search"
-							inputProps={{ 'aria-label': 'search' }}
-						/>
-					</Search>
+                <HeaderCenter item md={6.5} sx={{ position: 'relative'}}>
+                    
+                    <>
+                        {isShow ?
+                        <Box ref={ref} sx={{ boxShadow: '0 0 5px #000', position: 'absolute', top: 0, left: 0, width: '100%', background: "#fff", display: 'flex', flexDirection: 'column', zIndex: 1  }}>
+                            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                <ArrowBackIcon onClick={() => setIsShow(false)} sx={{ width: '50px', cursor: 'pointer' }}/>
+                                <SearchArea
+                                    value={searchValue}
+                                    onChange={e => setSearchValue(e.target.value)}
+                                    hiddenLabel
+                                    id="filled-hidden-label-normal"
+                                    placeholder='Search'
+                                    variant="filled"
+                                    fullWidth
+                                />
+                                <CloseIcon onClick={() => setSearchValue('')} sx={{ width: '50px', cursor: 'pointer' }}/>
+                            </Box>
+                            <>
+                                {searchValue && filtered.length ? 
+                                    <Box sx={{ pt: 1, pb: 1 }}>
+                                        {filtered.map(item => (
+                                            <Typography sx={{ p: '10px', '&:hover': { backgroundColor: 'lightgray' } }} variant='h5'>{item.title}</Typography>
+                                        )).slice(0, 5)}
+                                    </Box>
+                                    : null
+                                }
+                            </>
+                        </Box>
+                        :
+                        
+                        <Box onClick={() => setIsShow(true)}>
+                            <Box>Search</Box>
+                        </Box> 
+                        }
+                    </>
+                    
                     <Button 
                         variant="contained" 
                         sx={{ 
@@ -103,7 +123,7 @@ const Header = () => {
                     >Create</Button>
                 </HeaderCenter>
                 <HeaderSide sx={{ justifyContent: 'end' }} item md={3}>
-                    <>
+                    <Box>
                         {isAuth ?
                             <Box sx={{ display: 'flex', alignItems: 'center', position: 'relative' }}>
                                 <Box>{authUser.username}</Box>
@@ -112,7 +132,7 @@ const Header = () => {
                             : 
                             <LoginIcon sx={{ cursor: 'pointer' }} onClick={() => dispatch(openModal())}/>
                         }
-                    </>
+                    </Box>
                     
                 </HeaderSide>
                 

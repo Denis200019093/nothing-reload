@@ -15,7 +15,7 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { IPost } from './../models/IPost';
 import { IUser } from '../models/IUser';
 import { styled, alpha } from '@mui/material/styles';
-import { likeAsync, dislikeAsync } from '../redux/reducers/posts';
+import { likeAsync, dislikeAsync } from '../redux/actions/postsAction';
 import { useAppDispatch, useTypedSelector, } from '../hooks/useTypedSelector';
 
 
