@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping(("/posts"))
+@RequestMapping("/posts")
 @RequiredArgsConstructor
 public class PostController {
 
@@ -75,7 +75,7 @@ public class PostController {
     }
 
 //    @PostMapping("/{comment}/like")
-//    public ResponseEntity<?> likePost(@AuthenticationPrincipal User user,
+//    public ResponseEntity<?> likeComment(@AuthenticationPrincipal User user,
 //                                      @PathVariable(required = false) Comment comment) {
 //        if (user == null) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 //        if (comment == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -85,7 +85,7 @@ public class PostController {
 //    }
 //
 //    @PostMapping("/{comment}/dislike")
-//    public ResponseEntity<?> dislikePost(@AuthenticationPrincipal User user,
+//    public ResponseEntity<?> dislikeComment(@AuthenticationPrincipal User user,
 //                                         @PathVariable(required = false) Comment comment) {
 //        if (user == null) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 //        if (comment == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

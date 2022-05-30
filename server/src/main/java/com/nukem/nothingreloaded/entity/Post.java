@@ -2,7 +2,9 @@ package com.nukem.nothingreloaded.entity;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Type;
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
@@ -20,6 +22,7 @@ public class Post {
     @NotBlank(message = "Please fill the title")
     private String title;
     @Lob
+    @Type(type = "org.hibernate.type.TextType")
     @NotBlank(message = "Please fill the message")
     private String content;
     @CreatedDate
