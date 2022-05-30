@@ -24,4 +24,8 @@ public class PostService {
     public Post findById(Long id) {
         return postRepo.findById(id).orElseThrow(() -> new PostNotFoundException(id));
     }
+
+    public List<Post> findByContentContainingIgnoreCase(String query) {
+        return postRepo.findByContentContainingIgnoreCase(query);
+    }
 }
