@@ -78,15 +78,15 @@ export const dislikeAsync = createAsyncThunk(
     }
 )
 
-// export const searching = createAsyncThunk(
-//     'posts/searching',
-//     async (id: string, { rejectWithValue }) => {
-//         try {
-//             await $api.get(`/posts/${id}/dislike`, id)
-//             return id
-//         } catch (error) {
-//             return rejectWithValue('Не удалось дизлайкнуть пост')
-//         }
+export const searching = createAsyncThunk(
+    'posts/searching',
+    async (searchValue: string, { rejectWithValue }) => {
+        try {
+            const { data } = await $api.get(`/results?query=${searchValue}`)
+            return data
+        } catch (error) {
+            return rejectWithValue('Не удалось дизлайкнуть пост')
+        }
         
-//     }
-// )
+    }
+)

@@ -6,7 +6,8 @@ import {
     getPostDetails,
     createCommentAsync,
     likeAsync,
-    dislikeAsync 
+    dislikeAsync,
+    searching
 } from '../actions/postsAction'
 
 import { IPost, IComment } from '../../models/IPost'
@@ -188,6 +189,19 @@ const postsSlice = createSlice({
         [dislikeAsync.rejected.type]: (state,  action: PayloadAction<string>) => {
             state.isLoading = false;
             state.error = action.payload;
+        },
+        // FOund list item
+        [searching.fulfilled.type]: (state, action: PayloadAction<IPost[]>) => {
+            state.isLoading = false;
+            state.error = ''
+            state.foundItems = action.payload;
+        },
+        [searching.pending.type]: (state) => {
+            state.isLoading = true;
+        },
+        [searching.rejected.type]: (state,  action: PayloadAction<string>) => {
+            state.isLoading = false;
+            state.error = action.payload
         },
     }
 });

@@ -7,7 +7,6 @@ type TypeOut = {
 }
 
 /* 
-	Personal Hook
 	Hide element when click outside
 */
 export const useOutside = (initialIsVisible: boolean): TypeOut => {

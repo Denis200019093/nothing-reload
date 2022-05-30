@@ -19,6 +19,18 @@ import { likeAsync, dislikeAsync } from '../redux/actions/postsAction';
 import { useAppDispatch, useTypedSelector, } from '../hooks/useTypedSelector';
 
 
+export const CardItem = styled(Card)(({ theme }) => ({
+    margin: '16px 0 30px 0',
+    backgroundColor: 'rgba(40, 40, 40)', 
+    color: 'rgba(255,255,255,0.85)',
+    'a': {
+        color: 'rgba(255,255,255,0.85)',
+        '&:hover': {
+            color: theme.palette.primary.main,
+        }
+    }
+}));
+
 export const CardActionsItem = styled(Box)(({ theme }) => ({
     display: 'flex', 
     alignItems: 'center',
@@ -68,7 +80,7 @@ const PostItem: FC<IProps> = ({ item }) => {
     };
 
     return (
-        <Card sx={{ mb: 4, mt: 2 }}>
+        <CardItem>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', p: 2, pb: 0 }}>
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
                     <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
@@ -145,7 +157,7 @@ const PostItem: FC<IProps> = ({ item }) => {
                     </Box>
                 </Box>
             </CardActions>
-        </Card>
+        </CardItem>
     )
 }
 

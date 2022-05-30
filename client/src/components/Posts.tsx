@@ -17,7 +17,7 @@ const Posts = () => {
     }, [dispatch])    
     
     return (
-        <Box>            
+        <Box sx={{ width: '60%' }}>            
             {posts && posts.map((item: IPost, index: number) => (
                 <Suspense key={index} fallback={<SkeletonLoading/>}>
                     <PostItem

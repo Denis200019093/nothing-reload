@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { useParams } from 'react-router-dom';
 
-import { Box, Typography, Button } from '@mui/material'
+import { Box, Typography, Button, Grid } from '@mui/material'
 import { styled, alpha } from '@mui/material/styles';
 import { useAppDispatch, useTypedSelector } from '../hooks/useTypedSelector';
 import { getProfileUser, subscribe, unsubscribe } from '../redux/reducers/auth';
@@ -9,6 +9,7 @@ import { getProfileUser, subscribe, unsubscribe } from '../redux/reducers/auth';
 const WrapperInfoBlock = styled(Box)(({ theme }) => ({
 	display: 'flex',
     flexDirection: 'column',
+    minWidth: '65%'
 }));
 
 const UserInfoBlock = styled(Box)(() => ({
@@ -24,10 +25,11 @@ const UserInfoBlock = styled(Box)(() => ({
 
 const Background = styled(Box)(() => ({
     position: 'relative',
-    
+    borderRadius: '7.5px 7.5px 0 0',
+    marginTop: '15px',
 	minHeight: '250px',
     width: '100%',
-    background: "pink",
+    background: "rgb(55,55,55)",
 }));
 
 const BtnFollow = styled(Button)(() => ({
@@ -56,8 +58,7 @@ const Actions = styled(Box)(() => ({
     cursor: 'pointer',
     transition: '0.2s',
     '&:hover': {
-        background: '#fff',
-
+        background: 'rgb(70, 70, 70)',
     }
 }));
 
@@ -74,13 +75,13 @@ const User = () => {
     
     console.log(userProfile);
     return (
-        <Box>
+        <Grid item md={12} sx={{ display: 'flex', justifyContent: 'center', color: 'rgba(255,255,255,0.8)' }}>
             <WrapperInfoBlock>
                 <Background>
 
                     <UserAvatar src='https://i.pinimg.com/originals/be/6a/dc/be6adc8f98a4650049d6ee94f9c1a621.jpg' alt='alt'/>
                 </Background>
-                <UserInfoBlock>
+                <UserInfoBlock sx={{ background: "rgb(40,40,40)" }}>
                     <Typography sx={{ fontWeight: 700 }} variant='h4'>{userProfile.username}</Typography>
                     <Typography variant='body2'>Тренды интернета, истории из соцсетей, погружение в цифровую культуру и объяснения мемов.</Typography>
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -112,7 +113,7 @@ const User = () => {
                     </Box>
                 </Box>
             </WrapperInfoBlock>
-        </Box>
+        </Grid>
     )
 }
 

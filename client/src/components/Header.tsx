@@ -1,6 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom';
+import { useNavigate, useLocation } from "react-router-dom";
 import { styled } from '@mui/material/styles';
+import { SubmitHandler, useForm } from 'react-hook-form'
 import { 
     Box, AppBar, Button, Grid, 
     TextField, Typography 
@@ -15,31 +17,7 @@ import logo from '../assets/third.png'
 import { useAppDispatch, useTypedSelector } from '../hooks/useTypedSelector';
 import { getUserInfoAsync, logOut, openModal } from '../redux/reducers/auth';
 import { useOutside } from '../hooks/useOutside';
-
-
-const SearchArea = styled(TextField)(({ theme }) => ({
-    'input': {
-        backgroundColor: '#fff',
-        fontWeight: 700,
-        fontSize: '18px',
-    }
-}));
-
-const HeaderBlock = styled(Grid)(() => ({
-    minHeight: '60px',
-    padding: '5px 15px',
-}));
-
-const HeaderSide = styled(Grid)(() => ({
-    display: 'flex',
-    alignItems: 'center'
-}));
-
-const HeaderCenter = styled(Grid)(() => ({
-    display: 'flex',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-}));
+import { searching } from '../redux/actions/postsAction';
 
 const Logo = styled('img')(() => ({
     height: '50px',
@@ -47,82 +25,165 @@ const Logo = styled('img')(() => ({
     background: 'transparent'
 }));
 
+const SearchPanel = styled(Box)(() => ({
+    boxShadow: '0 0 5px #000', 
+    position: 'absolute', 
+    top: 0, 
+    left: 0, 
+    width: '100%', 
+    background: "rgb(40, 40, 40)", 
+    display: 'flex', 
+    flexDirection: 'column', 
+    zIndex: 1 ,
+    'input': {
+        background: "rgb(40, 40, 40)", 
+        fontWeight: 700,
+        fontSize: '18px',
+        color: 'rgba(255,255,255,0.8)'
+    }
+}));
+
+const HeaderSide = styled(Grid)(() => ({
+    display: 'flex',
+    alignItems: 'center'
+}));
+
+const HeaderCenter = styled(Grid)(({ theme }) => ({
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    
+}));
+
+const LinkPage = styled(Link)(({ theme }) => ({
+    textDecoration: 'none'
+}));
+
+const HeaderCenterItems = styled(Typography)(({ theme }) => ({
+    padding: '0 15px',
+    fontSize: '18px',
+    fontWeight: 700,
+    color: "rgba(255,255,255,0.5)",
+    cursor: 'pointer',
+    transition: '0.2s',
+    '&:hover': {
+        color: theme.palette.primary.main
+    },
+    'a': {
+        color: "rgba(255,255,255,0.5)"
+    }
+}));
+
+interface IValues {
+    searchValue: string
+}
+
+const routes = [
+    { id: 1, link: '', title: 'Main' },
+    { id: 2, link: 'bookmarks', title: 'Bookmarks' },
+    { id: 3, link: 'subscribes', title: 'Subscribes' }
+]
+
 const Header = () => {
 
     const dispatch = useAppDispatch()
     const { isAuth, authUser, isLoading } = useTypedSelector(state => state.auth)
     const { posts } = useTypedSelector(state => state.posts)
     const { ref, isShow, setIsShow } = useOutside(false)
+    const navigate = useNavigate()
+    const { pathname } = useLocation()
 
     const [ searchValue, setSearchValue ] = useState<string>('');
 
-    const filtered = posts.filter(item => item.title.toLowerCase().includes(searchValue.toLowerCase()))
+    const filtered = posts.filter(item => item.content.toLowerCase().includes(searchValue.toLowerCase()))
 
     useEffect(() => {
         if ( isAuth ) {
             dispatch(getUserInfoAsync())
         }
     }, [dispatch, isAuth])    
-    console.log(authUser);
+
+    const {
+		register,
+		handleSubmit,
+		formState: { errors },
+		reset
+	} = useForm<IValues>({
+		mode: 'onChange',
+	})
+
+    const submit: SubmitHandler<IValues> = () => {
+        reset()
+        navigate({
+            pathname: '/results',
+            search: `?query=${searchValue}`
+        })
+        dispatch(searching(searchValue))
+    };
     
     return (
-        <AppBar position="static" sx={{ height: '65px' }}>
-            <HeaderBlock container>
+        <AppBar position="static" sx={{ height: '65px', backgroundColor: 'rgba(60, 60, 60)' }}>
+            <Grid container sx={{ minHeight: '60px', padding: '5px 15px' }}>
                 <HeaderSide item md={2.5}>
                     <Link to='/'>
                         <Logo src={logo} alt='logo'/>
                     </Link>
                 </HeaderSide>
-                <HeaderCenter item md={6.5} sx={{ position: 'relative'}}>
-                    
-                    <>
+                <HeaderCenter item md={7} sx={{ position: 'relative'}}>
+                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                        {routes.map(item => (
+                            <LinkPage key={item.id} to={`${item.link}`}>
+                                <HeaderCenterItems
+                                    sx={{ 
+                                        color: item.link.toLowerCase() === 
+                                        pathname.slice(1) ? '#00C9A7' : '' 
+                                    }}> 
+                                {item.title}</HeaderCenterItems>
+                            </LinkPage>
+                        ))}
+                    </Box>
+                    <Box>
                         {isShow ?
-                        <Box ref={ref} sx={{ boxShadow: '0 0 5px #000', position: 'absolute', top: 0, left: 0, width: '100%', background: "#fff", display: 'flex', flexDirection: 'column', zIndex: 1  }}>
-                            <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                                <ArrowBackIcon onClick={() => setIsShow(false)} sx={{ width: '50px', cursor: 'pointer' }}/>
-                                <SearchArea
-                                    value={searchValue}
-                                    onChange={e => setSearchValue(e.target.value)}
-                                    hiddenLabel
-                                    id="filled-hidden-label-normal"
-                                    placeholder='Search'
-                                    variant="filled"
-                                    fullWidth
-                                />
-                                <CloseIcon onClick={() => setSearchValue('')} sx={{ width: '50px', cursor: 'pointer' }}/>
+                        <SearchPanel ref={ref}>
+                            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                                <ArrowBackIcon onClick={() => setIsShow(false)} sx={{ width: '50px', cursor: 'pointer', color: 'rgba(255,255,255,0.8)' }}/>
+                                <form style={{ width: '100%' }} onSubmit={handleSubmit(submit)}>
+                                    <TextField
+                                        {...register('searchValue', {
+                                            required: 'Value is required'
+                                        })}
+                                        value={searchValue}
+                                        onChange={e => setSearchValue(e.target.value)}
+                                        hiddenLabel
+                                        id="filled-hidden-label-normal"
+                                        placeholder='Search'
+                                        type='text'
+                                        fullWidth
+                                        variant="filled"
+                                    />
+                                </form>
+                                <CloseIcon onClick={() => setSearchValue('')} sx={{ width: '50px', cursor: 'pointer', color: 'rgba(255,255,255,0.8)' }}/>
                             </Box>
-                            <>
+                            <Box>
                                 {searchValue && filtered.length ? 
                                     <Box sx={{ pt: 1, pb: 1 }}>
                                         {filtered.map(item => (
-                                            <Typography sx={{ p: '10px', '&:hover': { backgroundColor: 'lightgray' } }} variant='h5'>{item.title}</Typography>
+                                            <Link to={`/posts/${item.id}`}>
+                                                <Typography sx={{ p: '10px', '&:hover': { backgroundColor: 'lightgray' } }} variant='h5'>{item.content}</Typography>
+                                            </Link>
                                         )).slice(0, 5)}
                                     </Box>
                                     : null
                                 }
-                            </>
-                        </Box>
+                            </Box>
+                        </SearchPanel>
                         :
-                        
-                        <Box onClick={() => setIsShow(true)}>
-                            <Box>Search</Box>
-                        </Box> 
+                            <HeaderCenterItems onClick={() => setIsShow(true)}>Search</HeaderCenterItems>
                         }
-                    </>
-                    
-                    <Button 
-                        variant="contained" 
-                        sx={{ 
-                            fontWeight: 500,
-                            background: '#F1F1F1',
-                            color: '#000',
-                            "&:hover": {
-                                background: '#fff'
-                            }
-                        }}
-                    >Create</Button>
+                    </Box>
+                    <HeaderCenterItems>Create</HeaderCenterItems>
                 </HeaderCenter>
-                <HeaderSide sx={{ justifyContent: 'end' }} item md={3}>
+                <HeaderSide sx={{ justifyContent: 'end' }} item md={2.5}>
                     <Box>
                         {isAuth ?
                             <Box sx={{ display: 'flex', alignItems: 'center', position: 'relative' }}>
@@ -136,7 +197,7 @@ const Header = () => {
                     
                 </HeaderSide>
                 
-            </HeaderBlock>
+            </Grid>
             
         </AppBar>
     )

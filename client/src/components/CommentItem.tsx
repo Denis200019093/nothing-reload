@@ -11,7 +11,7 @@ export const FlexBlocks = styled(Box)(({ theme }) => ({
 	display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    width: '100%'
+    width: '100%',
 }));
 
 interface IProps {
@@ -20,7 +20,7 @@ interface IProps {
 
 const CommentItem: FC<IProps> = ({ comment }) => {
     return (
-        <Box sx={{ backgroundColor: '#F1F1F1', p: 1, borderRadius: '7.5px', mb: 2, mt: 3 }}>
+        <Box sx={{ backgroundColor: 'rgb(40,40,40)', p: 1, borderRadius: '7.5px', mb: 2, mt: 3 }}>
             <FlexBlocks sx={{ mb: 2 }}>
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
                     <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />

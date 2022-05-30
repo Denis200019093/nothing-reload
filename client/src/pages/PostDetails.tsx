@@ -1,7 +1,7 @@
 import React, { useEffect, useState, Suspense } from 'react'
 import { useParams } from 'react-router-dom';
 
-import { Box, Typography, Avatar, TextareaAutosize, Button, CircularProgress } from '@mui/material';
+import { Box, Typography, Avatar, TextareaAutosize, Button, Grid } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import SortIcon from '@mui/icons-material/Sort';
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
@@ -22,11 +22,12 @@ const Comments = React.lazy(() => import('../components/Comments'));
 const CommentsBlock = styled(Box)(({ theme }) => ({
 	display: 'flex',
     flexDirection: 'column',
+    alignItems: 'center',
     width: '100%',
     marginTop: '10px',
-    background: '#fff',
+    background: 'rgb(50,50,50)',
     borderRadius: '7.5px',
-    padding: '10px',
+    padding: '15px',
 }));
 
 const ActiveBlock = styled(Box)(({ theme }) => ({
@@ -80,72 +81,76 @@ const PostDetails = () => {
     }, [dispatch, id])
     
     return (
-        <Box sx={{ pl: 3, pr: 3 }}>
-            <Box sx={{ background: '#fff', width: '100%', p: '10px', borderRadius: '7.5px' }}>
-                <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                    <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
-                    <Typography sx={{ ml: 1 }}>Nothing</Typography>
-                </Box>
-                <Typography sx={{ p: '15px 0' }} variant='h4'>{postDetails?.title}</Typography>
-                <Typography variant='body2'>{postDetails?.content}</Typography>
-                <FlexBlocks sx={{ mt: 2 }}>
-                    <Box sx={{ display: 'flex' }}>
-                        <CardActionsItem sx={{ pl :0 }}>
-                            <ChatBubbleOutlineIcon/>
-                            <Typography variant="body2">244</Typography>
-                        </CardActionsItem>
-                        <CardActionsItem>
-                            <BookmarkBorderIcon/>
-                        </CardActionsItem>
-                    </Box>
+        <Grid item md={12} sx={{ mt: 2, display: 'flex', justifyContent: 'center', color: 'rgba(255,255,255,0.8)' }}>
+            <Box sx={{ minWidth: '65%' }}>
+                <Box sx={{ background: 'rgb(50,50,50)', width: '100%', p: '15px', borderRadius: '7.5px' }}>
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                        <Arrows onClick={() => dispatch(likeAsync(postDetails.id))}>
-                            <KeyboardArrowUpIcon/>
-                        </Arrows>
-                        <Typography sx={{ pl: 1, pr: 1 }}>{postDetails?.rate?.rating}</Typography>
-                        <Arrows onClick={() => dispatch(dislikeAsync(postDetails.id))}>
-                            <KeyboardArrowDownIcon/>
-                        </Arrows>
+                        <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
+                        <Typography sx={{ ml: 1 }}>Nothing</Typography>
                     </Box>
-                </FlexBlocks>
-            </Box>
-            <CommentsBlock>
-                <FlexBlocks>
-                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                        <Typography variant='h5'>{postDetails.comments?.length}</Typography>
-                        <Typography sx={{ ml: 1 }} variant='h5'>comments</Typography>
-                    </Box>
-                    <SortIcon/>
-                </FlexBlocks>
-                <Box>
-                    {active ? 
-                        <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-                            <TextArea
-                                placeholder='Text...'
-                                value={text}
-                                onChange={e => setText(e.target.value)}
-                            /> 
-                            <Button 
-                                onClick={() => {
-                                    dispatch(createCommentAsync({text, id}))
-                                    setText('')
-                                }} 
-                                disabled={!text}
-                                sx={{ mt: 1, color: '#fff' }} 
-                                variant='contained'>
-                                Create
-                            </Button>
+                    <Typography sx={{ p: '15px 0' }} variant='h4'>{postDetails?.title}</Typography>
+                    <Typography variant='body2'>{postDetails?.content}</Typography>
+                    <FlexBlocks sx={{ mt: 2 }}>
+                        <Box sx={{ display: 'flex' }}>
+                            <CardActionsItem sx={{ pl :0 }}>
+                                <ChatBubbleOutlineIcon/>
+                                <Typography variant="body2">{postDetails?.comments?.length}</Typography>
+                            </CardActionsItem>
+                            <CardActionsItem>
+                                <BookmarkBorderIcon/>
+                            </CardActionsItem>
                         </Box>
-                        :
-                        <ActiveBlock onClick={() => setActive(true)}>Comment text...</ActiveBlock>
-                    }
+                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                            <Arrows onClick={() => dispatch(likeAsync(postDetails.id))}>
+                                <KeyboardArrowUpIcon/>
+                            </Arrows>
+                            <Typography sx={{ pl: 1, pr: 1 }}>{postDetails?.rate?.rating}</Typography>
+                            <Arrows onClick={() => dispatch(dislikeAsync(postDetails.id))}>
+                                <KeyboardArrowDownIcon/>
+                            </Arrows>
+                        </Box>
+                    </FlexBlocks>
                 </Box>
-                <Box sx={{ mt: 3, mb: 1 }}>{isLoading ? <Spinner/> : null}</Box>
-                <Suspense fallback={<Spinner/>}>
-                    <Comments comments={postDetails.comments}/>
-                </Suspense>
-            </CommentsBlock>
-        </Box>
+                <CommentsBlock>
+                    <Box sx={{ width: '85%' }}>
+                        <FlexBlocks>
+                            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                <Typography variant='h5'>{postDetails?.comments?.length}</Typography>
+                                <Typography sx={{ ml: 1 }} variant='h5'>comments</Typography>
+                            </Box>
+                            <SortIcon/>
+                        </FlexBlocks>
+                        <Box>
+                            {active ? 
+                                <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                                    <TextArea
+                                        placeholder='Text...'
+                                        value={text}
+                                        onChange={e => setText(e.target.value)}
+                                    /> 
+                                    <Button 
+                                        onClick={() => {
+                                            dispatch(createCommentAsync({text, id}))
+                                            setText('')
+                                        }} 
+                                        disabled={!text}
+                                        sx={{ mt: 1, color: '#fff' }} 
+                                        variant='contained'>
+                                        Create
+                                    </Button>
+                                </Box>
+                                :
+                                <ActiveBlock onClick={() => setActive(true)}>Comment text...</ActiveBlock>
+                            }
+                        </Box>
+                        <Box sx={{ mt: 3, mb: 1 }}>{isLoading ? <Spinner/> : null}</Box>
+                        <Suspense fallback={<Spinner/>}>
+                            <Comments comments={postDetails?.comments}/>
+                        </Suspense>
+                    </Box>
+                </CommentsBlock>
+            </Box>
+        </Grid>
     )
 }
 

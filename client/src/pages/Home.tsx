@@ -1,6 +1,6 @@
 import React, { FC, useState } from 'react'
 import { 
-    Button, Box, TextField
+    Button, Box, TextField, Grid
 } from '@mui/material';
 
 import { useAppDispatch } from '../hooks/useTypedSelector';
@@ -15,9 +15,9 @@ const Home: FC = () => {
     const [ content, setContent ] = useState<string>('')
 
     return (
-        <Box sx={{ mt: 3 }}>
+        <Grid item md={12} sx={{ mt: 3, display: 'flex', flexDirection: 'column', alignItems: 'center' }} >
             {/* <Box> */}
-            <TextField
+            {/* <TextField
                 name='title'
                 placeholder='title'
                 variant='outlined'
@@ -31,10 +31,10 @@ const Home: FC = () => {
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
             />
-            <Button onClick={() => dispatch(createPostAsync({ title, content }))}>Create post</Button>
+            <Button onClick={() => dispatch(createPostAsync({ title, content }))}>Create post</Button> */}
             
             <Posts/>
-        </Box>
+        </Grid>
         
     )
 }
