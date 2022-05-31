@@ -4,6 +4,8 @@ import com.nukem.nothingreloaded.entity.Post;
 import com.nukem.nothingreloaded.exception.exceptions.PostNotFoundException;
 import com.nukem.nothingreloaded.repository.PostRepo;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,8 +19,8 @@ public class PostService {
         postRepo.save(post);
     }
 
-    public List<Post> findAll() {
-        return postRepo.findAll();
+    public List<Post> findAll(Pageable pageable) {
+        return postRepo.findAll(pageable).getContent();
     }
 
     public Post findById(Long id) {

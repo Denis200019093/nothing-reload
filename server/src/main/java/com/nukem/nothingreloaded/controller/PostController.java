@@ -10,6 +10,8 @@ import com.nukem.nothingreloaded.repository.UserRepo;
 import com.nukem.nothingreloaded.service.CommentService;
 import com.nukem.nothingreloaded.service.PostService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -31,10 +33,15 @@ public class PostController {
     private final CommentService commentService;
 
     @GetMapping
-    public ResponseEntity<List<PostDto>> getAllPosts() {
+    public ResponseEntity<List<PostDto>> getAllPosts(@RequestParam(required = false) Integer page) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userRepo.findByUsername(auth.getName()).orElse(null);
-        List<PostDto> postList = postService.findAll().stream().map((post) -> PostDto.convertPostToDto(post, user)).collect(Collectors.toList());
+
+        if(page == null) page = 0;
+        Pageable pageable = PageRequest.of(page, 10);
+
+        List<PostDto> postList = postService.findAll(pageable).stream().map((post) -> PostDto.convertPostToDto(post, user)).collect(Collectors.toList());
+
         return new ResponseEntity<>(postList, HttpStatus.OK);
     }
 
@@ -42,6 +49,7 @@ public class PostController {
     public ResponseEntity<PostDto> getPostById(@AuthenticationPrincipal User user,
                                                @PathVariable Long id) {
         PostDto postDto = PostDto.convertPostToDto(postService.findById(id), user);
+
         return ResponseEntity.ok(postDto);
     }
 

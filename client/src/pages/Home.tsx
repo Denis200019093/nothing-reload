@@ -16,8 +16,8 @@ const Home: FC = () => {
 
     return (
         <Grid item md={12} sx={{ mt: 3, display: 'flex', flexDirection: 'column', alignItems: 'center' }} >
-            {/* <Box> */}
-            {/* <TextField
+             
+             <TextField
                 name='title'
                 placeholder='title'
                 variant='outlined'
@@ -31,7 +31,7 @@ const Home: FC = () => {
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
             />
-            <Button onClick={() => dispatch(createPostAsync({ title, content }))}>Create post</Button> */}
+            <Button onClick={() => dispatch(createPostAsync({ title, content }))}>Create post</Button> 
             
             <Posts/>
         </Grid>
