@@ -113,6 +113,9 @@ const Header = () => {
 	})
 
     const submit: SubmitHandler<IValues> = () => {
+
+        if ( !searchValue ) return
+
         reset()
         navigate({
             pathname: '/results',

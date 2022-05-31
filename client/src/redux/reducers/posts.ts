@@ -89,7 +89,6 @@ const postsSlice = createSlice({
         },
         // Liked post
         [likeAsync.fulfilled.type]: (state, action: PayloadAction<string>) => {
-            state.isLoading = false;
             state.error = '';
             state.posts = state.posts.map((item) => {
                 const { id, rate } = item
@@ -124,23 +123,26 @@ const postsSlice = createSlice({
                             rating: rating + 1, 
                             userLiked: true, 
                             userDisliked: false 
-                        } 
+                        },
+                        rateDetails: {
+                            rate: {
+                                rating: rating + 1, 
+                                userLiked: true, 
+                                userDisliked: false 
+                            },
+                        }
                     }
                 }
 
                 return item
             })
         },
-        [likeAsync.pending.type]: (state) => {
-            state.isLoading = true;
-        },
+        [likeAsync.pending.type]: (state) => {},
         [likeAsync.rejected.type]: (state,  action: PayloadAction<string>) => {
-            state.isLoading = false;
             state.error = action.payload;
         },
         // Disliked post
         [dislikeAsync.fulfilled.type]: (state, action: PayloadAction<string>) => {
-            state.isLoading = false;
             state.error = '';
             state.posts = state.posts.map((item) => {
                 const { id, rate } = item
@@ -183,11 +185,8 @@ const postsSlice = createSlice({
                 return item
             })
         },
-        [dislikeAsync.pending.type]: (state) => {
-            state.isLoading = true;
-        },
+        [dislikeAsync.pending.type]: (state) => {},
         [dislikeAsync.rejected.type]: (state,  action: PayloadAction<string>) => {
-            state.isLoading = false;
             state.error = action.payload;
         },
         // FOund list item
