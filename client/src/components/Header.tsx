@@ -18,6 +18,7 @@ import { useAppDispatch, useTypedSelector } from '../hooks/useTypedSelector';
 import { getUserInfoAsync, logOut, openModal } from '../redux/reducers/auth';
 import { useOutside } from '../hooks/useOutside';
 import { searching } from '../redux/actions/postsAction';
+import { toggleCreateModal } from '../redux/reducers/posts';
 
 const Logo = styled('img')(() => ({
     height: '50px',
@@ -92,7 +93,7 @@ const Header = () => {
     const { ref, isShow, setIsShow } = useOutside(false)
     const navigate = useNavigate()
     const { pathname } = useLocation()
-
+    
     const [ searchValue, setSearchValue ] = useState<string>('');
 
     const filtered = posts.filter(item => item.content.toLowerCase().includes(searchValue.toLowerCase()))
@@ -125,7 +126,7 @@ const Header = () => {
     };
     
     return (
-        <AppBar position="static" sx={{ height: '65px', backgroundColor: 'rgba(60, 60, 60)' }}>
+        <AppBar position="static" sx={{ height: '65px', background: 'linear-gradient(to right, #516395, #614385)' }}>
             <Grid container sx={{ minHeight: '60px', padding: '5px 15px' }}>
                 <HeaderSide item md={2.5}>
                     <Link to='/'>
@@ -169,7 +170,7 @@ const Header = () => {
                             </Box>
                             <Box>
                                 {searchValue && filtered.length ? 
-                                    <Box sx={{ pt: 1, pb: 1 }}>
+                                    <Box onClick={() => setIsShow(false)} sx={{ pt: 1, pb: 1 }}>
                                         {filtered.map(item => (
                                             <Link to={`/posts/${item.id}`}>
                                                 <Typography sx={{ p: '10px', '&:hover': { backgroundColor: 'lightgray' } }} variant='h5'>{item.content}</Typography>
@@ -184,7 +185,13 @@ const Header = () => {
                             <HeaderCenterItems onClick={() => setIsShow(true)}>Search</HeaderCenterItems>
                         }
                     </Box>
-                    <HeaderCenterItems>Create</HeaderCenterItems>
+                    <>
+                        {pathname === '/' ?
+                            <HeaderCenterItems onClick={() => dispatch(toggleCreateModal())}>Create</HeaderCenterItems>
+                        : null
+                        }
+                    </>
+                    
                 </HeaderCenter>
                 <HeaderSide sx={{ justifyContent: 'end' }} item md={2.5}>
                     <Box>

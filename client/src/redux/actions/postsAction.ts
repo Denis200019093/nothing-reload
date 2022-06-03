@@ -6,8 +6,9 @@ import { IPost, IComment } from '../../models/IPost';
 export const getPosts = createAsyncThunk(
     'posts/getPosts',
     async (page: number, { rejectWithValue }) => {
-        try {
+        try {            
             const { data } = await $api.get(`/posts?page=${page}`)
+                      
             return data
         } catch (error) {
             return rejectWithValue('Не удалось загрузить посты')

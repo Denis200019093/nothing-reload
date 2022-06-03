@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 import { Container, Grid, Snackbar } from '@mui/material';
 
 import { Routes, Route } from 'react-router-dom'
@@ -10,6 +10,7 @@ import { publicRoutes } from './routes';
 import { useTypedSelector } from './hooks/useTypedSelector';
 
 const App: FC = () => {
+
   	return (
 		<Container maxWidth='xl'>
 			<Grid container>

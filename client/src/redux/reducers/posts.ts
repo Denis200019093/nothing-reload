@@ -17,6 +17,7 @@ interface IState {
     postDetails: IPost
     foundItems: IPost[],
     isLoading: boolean
+    isCreateModal: boolean,
     isCreateComment: boolean,
     error: string
 }
@@ -26,6 +27,7 @@ const initialState: IState = {
     postDetails: {},
     foundItems: [],
     isLoading: false,
+    isCreateModal: false,
     isCreateComment: false,
     error: ''
 }
@@ -33,13 +35,17 @@ const initialState: IState = {
 const postsSlice = createSlice({
     name: 'posts',
     initialState,
-    reducers: {},
+    reducers: {
+        toggleCreateModal(state) {
+            state.isCreateModal = !state.isCreateModal
+        },
+    },
     extraReducers: {
         // Get all posts
         [getPosts.fulfilled.type]: (state, action: PayloadAction<IPost[]>) => {
             state.isLoading = false;
             state.error = ''
-            state.posts = action.payload;
+            state.posts = [...state.posts, ...action.payload]
         },
         [getPosts.pending.type]: (state) => {
             state.isLoading = true;
@@ -204,5 +210,9 @@ const postsSlice = createSlice({
         },
     }
 });
+
+export const {  
+    toggleCreateModal
+} = postsSlice.actions;
 
 export default postsSlice.reducer

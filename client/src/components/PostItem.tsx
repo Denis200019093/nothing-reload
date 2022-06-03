@@ -21,7 +21,8 @@ import { useAppDispatch, useTypedSelector, } from '../hooks/useTypedSelector';
 
 export const CardItem = styled(Card)(({ theme }) => ({
     margin: '16px 0 30px 0',
-    backgroundColor: 'rgba(40, 40, 40)', 
+    background: 'linear-gradient(to right, #516395, #614385)', 
+    boxShadow: '0px 0px 7px 0.1px #000000',
     color: 'rgba(255,255,255,0.85)',
     'a': {
         color: 'rgba(255,255,255,0.85)',
